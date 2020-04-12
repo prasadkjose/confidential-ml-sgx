@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EncrypterCLI", "EncrypterCLI\EncrypterCLI.vcxproj", "{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}.Debug|x64.ActiveCfg = Debug|x64
+		{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}.Debug|x64.Build.0 = Debug|x64
+		{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}.Debug|x86.ActiveCfg = Debug|Win32
+		{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}.Debug|x86.Build.0 = Debug|Win32
+		{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}.Release|x64.ActiveCfg = Release|x64
+		{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}.Release|x64.Build.0 = Release|x64
+		{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}.Release|x86.ActiveCfg = Release|Win32
+		{A7BD817E-1CB8-49E5-A603-CBBA2EC2D015}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A81B9D51-B78D-4E46-92C5-6A7014E73482}
+	EndGlobalSection
+EndGlobal
