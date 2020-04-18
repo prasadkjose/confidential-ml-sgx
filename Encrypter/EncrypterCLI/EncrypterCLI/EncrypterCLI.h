@@ -10,3 +10,5 @@
 //----------------------------------------------------------
 #include <bcrypt.h> 
 
+void encrypter();
+void decrypter();

@@ -18,13 +18,13 @@
     <ClCompile Include="EncrypterCLI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReadFile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="kitchensink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WriteFile.cpp">
+    <ClCompile Include="FileIOHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Decrypter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,7 +32,7 @@
     <ClInclude Include="EncrypterCLI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ReadFile.h">
+    <ClInclude Include="FileIOHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,2 +1,4 @@
-﻿  Main.cpp
+﻿  MainHelpers.cpp
+d:\masterthesis\encrypter\encrypter\encrypter\mainhelpers.cpp(88): warning C4101: 'file_name': unreferenced local variable
+d:\masterthesis\encrypter\encrypter\encrypter\mainhelpers.cpp(85): warning C4101: 'ofn': unreferenced local variable
   Encrypter.vcxproj -> D:\MasterThesis\Encrypter\Encrypter\Debug\Encrypter.exe

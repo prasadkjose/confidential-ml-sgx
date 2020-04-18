@@ -153,14 +153,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Decrypter.cpp" />
     <ClCompile Include="EncrypterCLI.cpp" />
+    <ClCompile Include="FileIOHandler.cpp" />
     <ClCompile Include="kitchensink.cpp" />
-    <ClCompile Include="ReadFile.cpp" />
-    <ClCompile Include="WriteFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EncrypterCLI.h" />
-    <ClInclude Include="ReadFile.h" />
+    <ClInclude Include="FileIOHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

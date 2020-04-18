@@ -1,7 +1,8 @@
 //#include <windows.h>
 //#include <stdio.h>
 //#include <bcrypt.h>
-//#include "ReadFile.h"
+//#include "FileIOHandler.h"
+//
 //
 //#define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
 //
@@ -45,8 +46,7 @@
 //	//printf("%d", sizeof(rgbPlaintext));
 //	
 //	BYTE rgbPlaintext[17] = { 0 };
-//	ReadFile((TCHAR*)rgbPlaintext);
-//
+//	readFile(TEXT("Text.txt"), rgbPlaintext, 17);
 //
 //	BCRYPT_ALG_HANDLE       hAesAlg = NULL;
 //	BCRYPT_KEY_HANDLE       hKey = NULL;
