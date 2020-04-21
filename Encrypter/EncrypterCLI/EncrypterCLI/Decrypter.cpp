@@ -305,10 +305,10 @@ Cleanup:
 
 }
 
-void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
-{
-
-	UNREFERENCED_PARAMETER(argc);
-	UNREFERENCED_PARAMETER(wargv);
-	decrypter();
-}
+//void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
+//{
+//
+//	UNREFERENCED_PARAMETER(argc);
+//	UNREFERENCED_PARAMETER(wargv);
+//	decrypter();
+//}

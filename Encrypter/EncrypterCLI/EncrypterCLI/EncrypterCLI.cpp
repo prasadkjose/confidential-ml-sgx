@@ -2,8 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <bcrypt.h>
-#include "FileIOHandler.h"
-
+#include "EncrypterCLI.h"
 #define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
 
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
@@ -20,15 +19,22 @@ static const BYTE rgbIV[] =
 };
 
 //16 Byte key
-static const BYTE rgbAES128Key[] =
-{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
 
-void encrypter()
+
+void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR EncryptedPath, LPCTSTR KeyBlobPath)
 {
+	/* --------------------------------------------------------------------	
+	Encrypter Function 
+	@PARAM LPCTSTR PlaintextPath
+	@PARAM BYTE rgbAES128Key
+	@PARAM LPCTSTR EncryptedPath
+	@PARAM LPCTSTR KeyBlobPath
+	-----------------------------------------------------------------------
+	*/
 	//printf("%d", sizeof(rgbPlaintext));
 
 	BYTE rgbPlaintext[16] = { 0 };
-	readFile(TEXT("Text.txt"), rgbPlaintext, 16);
+	readFile(PlaintextPath, rgbPlaintext, 16);
 
 
 	BCRYPT_ALG_HANDLE       hAesAlg = NULL;
@@ -176,7 +182,8 @@ void encrypter()
 		goto Cleanup;
 	}
 	else {
-		writeFile(TEXT("TestOutKey.txt"), pbBlob, cbBlob);
+		//writeFile(TEXT("TestOutKey.txt"), pbBlob, cbBlob);
+		writeFile(KeyBlobPath, pbBlob, cbBlob);
 		printf("\n%d Size of key blob = ", cbBlob);
 		for (int i = 0; i < cbBlob; i++)
 		{
@@ -256,7 +263,8 @@ void encrypter()
 		printf("\n %s", "Encryption Complete");
 
 		//Write enrypted Data to a file
-		writeFile(TEXT("TestOut.txt"), pbCipherText, cbCipherText);
+		//writeFile(TEXT("TestOut.txt"), pbCipherText, cbCipherText);
+		writeFile(EncryptedPath, pbCipherText, cbCipherText);
 
 
 	}
@@ -310,11 +318,13 @@ Cleanup:
 
 }
 
-//void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
-//{
-//	
-//	UNREFERENCED_PARAMETER(argc);
-//	UNREFERENCED_PARAMETER(wargv);
-//	encrypter();
-//
-//}
+void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
+{
+	
+	UNREFERENCED_PARAMETER(argc);
+	UNREFERENCED_PARAMETER(wargv);
+	BYTE rgbAES128Key[16] =
+	{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+	encrypter(TEXT("Text.txt"), rgbAES128Key, TEXT("keyOut.txt"), TEXT("CT.txt"));
+
+}

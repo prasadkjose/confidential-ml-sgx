@@ -18,10 +18,5 @@ void loadMainApp(HWND);
 void uploadFileProc(HWND);
 void addFileUploadControls(HWND);
 void listFilesDir(HWND, TCHAR);
+BOOL copyFileToDest(PWSTR, LPCWSTR) ;
 
-
-HRESULT CDialogEventHandler_CreateInstance(REFIID riid, void **ppv);
-HWND createListView(HWND, HINSTANCE);
-BOOL InsertListViewItems(HWND, int);
-void HandleWM_NOTIFY(LPARAM);
-BOOL InitListViewColumns(HWND);

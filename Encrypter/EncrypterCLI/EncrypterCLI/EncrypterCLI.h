@@ -9,6 +9,8 @@
 #include <ntstatus.h>
 //----------------------------------------------------------
 #include <bcrypt.h> 
+#include "FileIOHandler.h"
 
-void encrypter();
+
+void encrypter(LPCTSTR, BYTE, LPCTSTR, LPCTSTR);
 void decrypter();

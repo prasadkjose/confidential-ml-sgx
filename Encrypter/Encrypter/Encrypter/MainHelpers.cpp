@@ -1,6 +1,27 @@
+
 #include "MainHelpers.h"
 #include <vector>
 #include <string>
+#include <stdio.h>
+#include "EncrypterCLI/EncrypterCLI.h"
+
+#define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
+
+#define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
+
+
+//const BYTE rgbPlaintext;
+//{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+
+
+static const BYTE rgbIV[] =
+{
+	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+	0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
+};
+
+
+
 using std::string;
 using std::vector;
 
@@ -68,6 +89,10 @@ void loadMainApp(HWND hwnd)
 	addLoginContols(hwnd);
 }
 
+
+
+
+
 //-------------------------------------------------------------------------------------------------------
 //Client Dashboard Helper functions
 
@@ -118,12 +143,20 @@ void uploadFileProc(HWND hwnd)
 						// concatenate the string with the Data directory path
 						wchar_t saveTo[100] = L"Data/";
 						wcscat_s(saveTo,100, L"text.txt");
+												
+						
+						if (encrypter(pszFilePath, TEXT("crypt/CT.txt"), TEXT("crypt/keyOut.txt")))
+							MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+						else
+							MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
 
+
+						//	//Call ReadFile with the buffer initialized above.
 						//Copy the file to the Data Directory
-						if(CopyFile(pszFilePath, saveTo, TRUE))
+						/*if(copyFileToDest(pszFilePath, (LPCWSTR)saveTo))
 							MessageBox(NULL, pszFilePath, L"File Copy", MB_OK);
 						else 
-							MessageBox(NULL, L"File Open Error", L"File Copy", MB_OK);
+							MessageBox(NULL, L"File Open Error", L"File Copy", MB_OK);*/
 
 						CoTaskMemFree(pszFilePath);
 					}
@@ -134,6 +167,16 @@ void uploadFileProc(HWND hwnd)
 		}
 		CoUninitialize();
 	}
+}
+
+BOOL copyFileToDest(PWSTR pszFilePath, LPCWSTR saveTo) {
+	if (CopyFile(pszFilePath, saveTo, TRUE))
+		return 1;
+	else
+	{
+		return 0;
+	}
+
 }
 
 void listFilesDir(HWND hwnd, TCHAR folder)
@@ -169,3 +212,4 @@ void listFilesDir(HWND hwnd, TCHAR folder)
 	}
 
 }
+

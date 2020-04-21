@@ -109,6 +109,8 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		{
 		case OPEN_FILE_BUTTON:
 			uploadFileProc(hwnd);
+			listFilesDir(hwnd, (TCHAR)"Data/");
+
 			break;
 		}
 		break;

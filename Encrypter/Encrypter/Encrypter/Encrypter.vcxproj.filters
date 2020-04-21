@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\EncrypterCLI">
+      <UniqueIdentifier>{6781630d-e699-4b5a-860f-f8c64825c6b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EncrypterCLI">
+      <UniqueIdentifier>{054d8f9f-3328-460e-85a9-4f7e34310b3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -27,6 +33,12 @@
     <ClCompile Include="kitchensink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EncrypterCLI\EncrypterCLI.cpp">
+      <Filter>Source Files\EncrypterCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="EncrypterCLI\FileIOHandler.cpp">
+      <Filter>Source Files\EncrypterCLI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainHelpers.h">
@@ -37,6 +49,12 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EncrypterCLI\EncrypterCLI.h">
+      <Filter>Header Files\EncrypterCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="EncrypterCLI\FileIOHandler.h">
+      <Filter>Header Files\EncrypterCLI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
