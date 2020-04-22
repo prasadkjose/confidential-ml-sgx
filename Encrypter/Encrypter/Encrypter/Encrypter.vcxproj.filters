@@ -19,6 +19,12 @@
     <Filter Include="Source Files\EncrypterCLI">
       <UniqueIdentifier>{054d8f9f-3328-460e-85a9-4f7e34310b3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\NeuralCLI">
+      <UniqueIdentifier>{f8b7b63e-8145-40e6-a2e2-fdec0f662d88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\NeuralCLI">
+      <UniqueIdentifier>{ad262b6d-ff93-41e3-b984-15c8fbd7792d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -39,6 +45,39 @@
     <ClCompile Include="EncrypterCLI\FileIOHandler.cpp">
       <Filter>Source Files\EncrypterCLI</Filter>
     </ClCompile>
+    <ClCompile Include="NNHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EncrypterHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\common.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\data.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\data_handler.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\hidden_layer.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\input_layer.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\layer.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\network.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\neuron.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\output_layer.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainHelpers.h">
@@ -55,6 +94,39 @@
     </ClInclude>
     <ClInclude Include="EncrypterCLI\FileIOHandler.h">
       <Filter>Header Files\EncrypterCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NNHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EncrypterHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\common.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\data.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\data_handler.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\hidden_layer.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\input_layer.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\layer.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\network.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\neuron.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\output_layer.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
