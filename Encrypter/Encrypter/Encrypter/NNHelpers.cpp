@@ -7,9 +7,27 @@
 HWND trainUpldBtn;
 HWND trainBtn;
 
+void addTrainFileControls(HWND hwnd)
+{
+	//-------------------------------------------------------------------------------------------------------
+	// This function creates Train  controls 
+	// @PARAM HWND window handler of  the Main app
+
+	trainUpldBtn = CreateWindowW(L"Button", L"Upload Train Set", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 751, 381, 133, 36, hwnd, (HMENU)OPEN_TRAIN_FILE_BUTTON, NULL, NULL);
+	trainBtn = CreateWindowW(L"Button", L"Train", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 951, 381, 133, 36, hwnd, (HMENU)TRAIN_BUTTON, NULL, NULL);
+
+}
+
 
 BOOL copyFileToDest(PWSTR pszFilePath, LPCWSTR saveTo) {
+	//-------------------------------------------------------------------------------------------------------
+	// This function copies a file from a source to destination
+	// @PARAM PWSTR poitner to existing file
+	// @PARAM LPCWSTR poitner to destination file
+	//Return - true if function succeeds. 
+
 	if (CopyFile(pszFilePath, saveTo, TRUE))
+		
 		return 1;
 	else
 	{
@@ -20,6 +38,11 @@ BOOL copyFileToDest(PWSTR pszFilePath, LPCWSTR saveTo) {
 
 void listTrainFilesDir(HWND hwnd)
 {
+	//-------------------------------------------------------------------------------------------------------
+	// This function lists the files in the "Data" Directory
+	// @PARAM HWND Handle to the Window to display the list in 
+	//
+	//Return - true if function succeeds. 
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 	BYTE names[] = { "0" };
@@ -54,7 +77,9 @@ void listTrainFilesDir(HWND hwnd)
 
 void uploadTrainFileProc(HWND hwnd)
 {
-	// This function take a file path and copies it to the Data directory
+	//-------------------------------------------------------------------------------------------------------
+	// This function opens file selector and copies it to "data" directory
+	// @PARAM HWND Handle to the Window to display the list in 
 
 	OPENFILENAME ofn;
 
@@ -113,24 +138,11 @@ void uploadTrainFileProc(HWND hwnd)
 	}
 }
 
-void addTrainFileUploadControls(HWND hwnd)
-{
-	trainUpldBtn = CreateWindowW(L"Button", L"Upload Train Set", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 751, 381, 133, 36, hwnd, (HMENU)OPEN_TRAIN_FILE_BUTTON, NULL, NULL);
-	trainBtn = CreateWindowW(L"Button", L"Train", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 951, 381, 133, 36, hwnd, (HMENU)TRAIN_BUTTON, NULL, NULL);
-
-}
-
 void trainBtnClick()
 {	
-
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	wchar_t buf[100];
-	//	int len = swprintf_s(buf, 100, L"%s%d", L"adjaso oasdoasiod apjdp9asdpasj 9adipasjdipp prasadj okjkjaskjd-", i);
-	//__printf((LPWSTR)buf);
-
-	//
-	//}
+	//-------------------------------------------------------------------------------------------------------
+		// This function is the event trigger for the train Model function.  
+		// NO PARAMS
 
 	if (mainNN())
 	{
@@ -146,6 +158,11 @@ void trainBtnClick()
 
 HWND addConsoleControl(HWND hwnd)
 {
+	//-------------------------------------------------------------------------------------------------------
+		// This function creates a console window to display print statements.  
+		// @PARAM HWND Window handler to the parent window. 
+		// Returns - the window handle of the console.
+
 	//Edit box to the main window.
 	HWND hwndConsole = CreateWindowEx(
 		0, L"EDIT",   // predefined class 
@@ -168,6 +185,10 @@ HWND addConsoleControl(HWND hwnd)
 
 void printToConsoleControl(HWND hwnd, LPWSTR text)
 {
+	//-------------------------------------------------------------------------------------------------------
+		// This function appends the input text to the console window.  
+		// @PARAM HWND Window handler to the parent window. 
+		// Returns - NULL.
 	
 	 // get edit control from dialog
 	HWND hwndOutput = GetDlgItem(hwnd, APPEND_CONSOLE);

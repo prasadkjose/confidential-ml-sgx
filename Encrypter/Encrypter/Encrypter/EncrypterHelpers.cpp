@@ -9,6 +9,9 @@ HWND upldBtn;
 
 void addFileEncrypterUploadControls(HWND hwnd)
 {
+	//-------------------------------------------------------------------------------------------------------
+	// This function creates encrypter Upload controls 
+	// @PARAM HWND window handler of  the Main app
 	upldBtn = CreateWindowW(L"Button", L"Upload", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 751, 381, 133, 36, hwnd, (HMENU)OPEN_ENCRYPT_FILE_BUTTON, NULL, NULL);
 
 
@@ -16,7 +19,10 @@ void addFileEncrypterUploadControls(HWND hwnd)
 
 void uploadFileEncrypterProc(HWND hwnd)
 {
-	// This function take a file path and copies it to the Data directory
+	//-------------------------------------------------------------------------------------------------------
+	// This function take a file and copies it to the Data directory
+	// @PARAM HWND window handler of  the Main app
+
 
 	OPENFILENAME ofn;
 
@@ -80,10 +86,11 @@ void uploadFileEncrypterProc(HWND hwnd)
 	}
 }
 
-
-
 void listEncryptedFilesDir(HWND hwnd)
 {
+	//-------------------------------------------------------------------------------------------------------
+	// This function lists the contents of the "crypt" directory 
+	// @PARAM HWND window handler of  the Main app
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 	BYTE names[] = { "0" };
@@ -117,6 +124,13 @@ void listEncryptedFilesDir(HWND hwnd)
 }
 
 bool saveEncrypted(HWND hwnd, LPWSTR fileName) {
+	//-------------------------------------------------------------------------------------------------------
+	// This function take a file and copies it to the Data directory
+	// @PARAM HWND window handler of  the Main app
+	// @PARAM LPWSTR pointer to the file name taht the user selects. 
+	//Return - true if the function succeeds.
+
+
 	//relative path to the encrypted dir
 	wchar_t sourcePath[100] = L"crypt/";
 	wcscat_s(sourcePath, 100, fileName); //append the file name selected
@@ -154,15 +168,11 @@ bool saveEncrypted(HWND hwnd, LPWSTR fileName) {
 				IShellItem *pItem;
 				hr = pFileOpen->GetResult(&pItem);
 				if (SUCCEEDED(hr))
-				{
-					
+				{					
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszDestPath);
-
 					// Display the destination path name to the user.
 					if (SUCCEEDED(hr))
-					{
-
-						//copy encrypted file <fileName> to destination.
+					{						
 
 						//append file name to destination path
 						wchar_t destPath[100]= L"";
@@ -172,15 +182,15 @@ bool saveEncrypted(HWND hwnd, LPWSTR fileName) {
 						wcscat_s(destPath, 100, fileName);
 						//MessageBox(NULL, destPath, L"Success", MB_OK);
 
-						if (CopyFile(sourcePath, destPath, TRUE)) {
-							//TODO : Print a good message 
+						if (CopyFile(sourcePath, destPath, TRUE)) 
+						{
 							MessageBox(NULL, destPath, L"Success", MB_OK);
-
 						}
 						else
+						{
 							MessageBox(NULL, L"Download Fail", L"Fail", MB_OK);
-
-
+							return false;
+						}
 
 						CoTaskMemFree(pszDestPath);
 					}
@@ -191,12 +201,5 @@ bool saveEncrypted(HWND hwnd, LPWSTR fileName) {
 		}
 		CoUninitialize();
 	}
-
-
-	
-
-	
-
-
 	return true;
 }

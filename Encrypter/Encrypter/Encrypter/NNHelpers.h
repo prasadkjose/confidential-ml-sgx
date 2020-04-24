@@ -27,7 +27,7 @@
 
 
 void uploadTrainFileProc(HWND);
-void addTrainFileUploadControls(HWND);
+void addTrainFileControls(HWND);
 void listTrainFilesDir(HWND);
 
 void trainBtnClick();

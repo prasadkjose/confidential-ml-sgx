@@ -14,6 +14,10 @@ HWND a, b;
 
 void AddControls(HWND hwnd)
 {
+	//-------------------------------------------------------------------------------------------------------
+		// This function creates windows and coontorls to the main App.  
+		// @PARAM HWND Window handler to the parent window. 
+		// Returns - NULL.
 	HWND hwnda;
 		
 	//Creates a label
@@ -27,6 +31,11 @@ void AddControls(HWND hwnd)
 
 void drawRect(HWND hwnd, HDC hdc)
 {
+	//-------------------------------------------------------------------------------------------------------
+		// This function creates a Colored Rectangle.  
+		// @PARAM HWND Window handler to the parent window. 
+		// @PARAM HDC Device Cpntext Handle of the paint. 
+		// Returns - NULL.
 	RECT parentRect;
 	long width, height;
 	if (GetWindowRect(hwnd, &parentRect))
@@ -51,6 +60,12 @@ void drawRect(HWND hwnd, HDC hdc)
 
 void addLoginContols(HWND hwnd)
 {
+	//-------------------------------------------------------------------------------------------------------
+		// This function creates windows and controls for Login page.  
+		// @PARAM HWND Window handler to the parent window. 
+		// Returns - NULL.
+
+
 	a = CreateWindowW(L"Static", L"Username : ", WS_VISIBLE | WS_CHILD | SS_CENTER, 572, 234, 70, 20, hwnd, NULL, NULL, NULL);
 	CreateWindowW(L"Static", L"Password : ", WS_VISIBLE | WS_CHILD | SS_CENTER, 572, 308, 70, 20, hwnd, NULL, NULL, NULL);
 	b = CreateWindowW(L"Edit", L"...", WS_VISIBLE | WS_CHILD | WS_BORDER, 718, 225, 200, 40, hwnd, NULL, NULL, NULL);
