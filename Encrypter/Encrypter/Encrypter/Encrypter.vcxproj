@@ -170,6 +170,7 @@
     <ClCompile Include="NeuralCLI\neuron.cpp" />
     <ClCompile Include="NeuralCLI\output_layer.cpp" />
     <ClCompile Include="NNHelpers.cpp" />
+    <ClCompile Include="PrintConsole.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="NeuralCLI\neuron.hpp" />
     <ClInclude Include="NeuralCLI\output_layer.hpp" />
     <ClInclude Include="NNHelpers.h" />
+    <ClInclude Include="PrintConsole.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

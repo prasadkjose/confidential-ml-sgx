@@ -90,11 +90,11 @@ void listEncryptedFilesDir(HWND hwnd)
 	int y = 108;
 
 	//_tprintf(TEXT("Target file is %s\n"), argv[1]);
-	hFind = FindFirstFile(L"Data/*.txt", &FindFileData);
+	hFind = FindFirstFile(L"crypt/*", &FindFileData);
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
 		//printf("FindFirstFile failed (%d)\n", GetLastError());
-		MessageBox(NULL, L"Error", L"File Copy", MB_OK);
+		MessageBox(NULL, L"No file here", L"List Files", MB_OK);
 
 		return;
 	}
@@ -104,7 +104,7 @@ void listEncryptedFilesDir(HWND hwnd)
 		while (FindNextFile(hFind, &FindFileData))
 		{
 			//MessageBox(NULL, FindFileData.cFileName, L"File Copy", MB_OK);
-			CreateWindowW(L"Static", FindFileData.cFileName, WS_VISIBLE | WS_CHILD | SS_CENTER, 72, y, 200, 20, hwnd, NULL, NULL, NULL);
+			CreateWindowW(L"Static", FindFileData.cFileName, WS_VISIBLE | WS_CHILD | SS_CENTER | SS_NOTIFY, 72, y, 200, 20, hwnd, NULL, NULL, NULL);
 			y = y + 25;
 
 		}
@@ -116,3 +116,87 @@ void listEncryptedFilesDir(HWND hwnd)
 
 }
 
+bool saveEncrypted(HWND hwnd, LPWSTR fileName) {
+	//relative path to the encrypted dir
+	wchar_t sourcePath[100] = L"crypt/";
+	wcscat_s(sourcePath, 100, fileName); //append the file name selected
+
+
+
+	//open destination to save and get the destination directory path
+	OPENFILENAME ofn;
+
+	
+	PWSTR pszDestPath; //The destination path name selected will be stored here
+
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog *pFileOpen;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+		DWORD dwOptions;
+		if (SUCCEEDED(pFileOpen->GetOptions(&dwOptions)))
+		{
+			pFileOpen->SetOptions(dwOptions | FOS_PICKFOLDERS);
+		}
+		if (SUCCEEDED(hr))
+		{
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem *pItem;
+				hr = pFileOpen->GetResult(&pItem);
+				if (SUCCEEDED(hr))
+				{
+					
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszDestPath);
+
+					// Display the destination path name to the user.
+					if (SUCCEEDED(hr))
+					{
+
+						//copy encrypted file <fileName> to destination.
+
+						//append file name to destination path
+						wchar_t destPath[100]= L"";
+
+						wcscat_s(destPath, 100, pszDestPath);
+						wcscat_s(destPath, 100, L"\\");
+						wcscat_s(destPath, 100, fileName);
+						//MessageBox(NULL, destPath, L"Success", MB_OK);
+
+						if (CopyFile(sourcePath, destPath, TRUE)) {
+							//TODO : Print a good message 
+							MessageBox(NULL, destPath, L"Success", MB_OK);
+
+						}
+						else
+							MessageBox(NULL, L"Download Fail", L"Fail", MB_OK);
+
+
+
+						CoTaskMemFree(pszDestPath);
+					}
+					pItem->Release();
+				}
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
+
+
+	
+
+	
+
+
+	return true;
+}

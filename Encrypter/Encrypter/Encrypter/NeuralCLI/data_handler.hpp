@@ -22,7 +22,7 @@ class data_handler
   std::map<std::string, int> classMap; //string key
 
   public:
-  const double TRAIN_SET_PERCENT = .003;
+  const double TRAIN_SET_PERCENT = 0.003;
   const double TEST_SET_PERCENT = .0005;
   const double VALID_SET_PERCENT = 0.005;
 

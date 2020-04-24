@@ -2,6 +2,9 @@
 #include "layer.hpp"
 #include "data_handler.hpp"
 #include <time.h>
+#include "../PrintConsole.h"
+#include <Windows.h>
+
 Network::Network(std::vector<int> hiddenLayerSpec, int inputSize, int numClasses)
 {
   inputLayer = new InputLayer(0, inputSize);
@@ -90,6 +93,11 @@ void Network::train()
       }
     }
   }
+
+ 
+  wchar_t buf[100];
+  int len = swprintf_s(buf, 100, L"%s%.4f", L"Current Performance:", numCorrect / (double)this->training_data->size());
+  __printf((LPWSTR)buf);
   //fprintf(stderr, "Current Performance: %.4f\n", numCorrect / (double)this->training_data->size());
 }
 
@@ -119,7 +127,11 @@ void Network::test()
       }
     }
   }
+  
  // fprintf(stderr, "Tested Performance: %.4f\n", numCorrect / (double)this->test_data->size());
+  wchar_t buf[100];
+  int len = swprintf_s(buf, 100, L"%s%.4f", L"Tested Performance:", numCorrect / (double)this->test_data->size());
+  __printf((LPWSTR)buf);
 }
 
 void Network::validate()
@@ -132,8 +144,8 @@ int mainNN()
 {
   data_handler *dh = new data_handler();
 //#ifdef MNIST
-  dh->read_input_data("mnist_data/train-images-idx3-ubyte");
-  dh->read_label_data("mnist_data/train-labels-idx1-ubyte");
+  dh->read_input_data("data/train-images-idx3-ubyte");
+  dh->read_label_data("data/train-labels-idx1-ubyte");
   dh->normalize();
 //#else
   //dh->read_csv("/home/gerardta/iris.data", ",");
@@ -146,11 +158,14 @@ int mainNN()
   net->set_test_data(dh->get_test_data());
   net->set_validation_data(dh->get_validation_data());
  
- /* for (int i = 0; i < 10; i++)
-  {	printf("%d\n", i);
+  for (int i = 0; i < 10; i++)
+  {	
+	  wchar_t buf[100];
+	  int len = swprintf_s(buf, 100, L"%s%d", L"Iteration:",i);
+	  __printf((LPWSTR)buf);
 	  net->train();
 
-  }*/
+  }
 	 
   net->test();
   return 1;

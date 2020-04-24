@@ -1,9 +1,12 @@
 #include "NNHelpers.h"
 #include "NeuralCLI/network.hpp"
+#include "PrintConsole.h"
+#include <string> 
 
-
+//TODO : Comment all the new functions added today
 HWND trainUpldBtn;
 HWND trainBtn;
+
 
 BOOL copyFileToDest(PWSTR pszFilePath, LPCWSTR saveTo) {
 	if (CopyFile(pszFilePath, saveTo, TRUE))
@@ -20,14 +23,14 @@ void listTrainFilesDir(HWND hwnd)
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 	BYTE names[] = { "0" };
-	int y = 108;
+	int y = 160;
 
 	//_tprintf(TEXT("Target file is %s\n"), argv[1]);
-	hFind = FindFirstFile(L"Data/*.txt", &FindFileData);
+	hFind = FindFirstFile(L"Data/*", &FindFileData);
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
 		//printf("FindFirstFile failed (%d)\n", GetLastError());
-		MessageBox(NULL, L"Error", L"File Copy", MB_OK);
+		MessageBox(NULL, L"No file here", L"List Files", MB_OK);
 
 		return;
 	}
@@ -37,7 +40,7 @@ void listTrainFilesDir(HWND hwnd)
 		while (FindNextFile(hFind, &FindFileData))
 		{
 			//MessageBox(NULL, FindFileData.cFileName, L"File Copy", MB_OK);
-			CreateWindowW(L"Static", FindFileData.cFileName, WS_VISIBLE | WS_CHILD | SS_CENTER, 72, y, 200, 20, hwnd, NULL, NULL, NULL);
+			CreateWindowW(L"Static", FindFileData.cFileName, WS_VISIBLE | WS_CHILD | SS_CENTER, 32, y, 200, 20, hwnd, NULL, NULL, NULL);
 			y = y + 25;
 
 		}
@@ -67,7 +70,7 @@ void uploadTrainFileProc(HWND hwnd)
 		// Create the FileOpenDialog object.
 		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
 			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
-
+		
 		if (SUCCEEDED(hr))
 		{
 			// Show the Open dialog box.
@@ -78,6 +81,7 @@ void uploadTrainFileProc(HWND hwnd)
 			{
 				IShellItem *pItem;
 				hr = pFileOpen->GetResult(&pItem);
+
 				if (SUCCEEDED(hr))
 				{
 					PWSTR pszFilePath;
@@ -117,8 +121,16 @@ void addTrainFileUploadControls(HWND hwnd)
 }
 
 void trainBtnClick()
-{
+{	
 
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	wchar_t buf[100];
+	//	int len = swprintf_s(buf, 100, L"%s%d", L"adjaso oasdoasiod apjdp9asdpasj 9adipasjdipp prasadj okjkjaskjd-", i);
+	//__printf((LPWSTR)buf);
+
+	//
+	//}
 
 	if (mainNN())
 	{
@@ -130,4 +142,50 @@ void trainBtnClick()
 		MessageBox(NULL, L"Train Failed", L"Train", MB_OK);
 
 	}
+}
+
+HWND addConsoleControl(HWND hwnd)
+{
+	//Edit box to the main window.
+	HWND hwndConsole = CreateWindowEx(
+		0, L"EDIT",   // predefined class 
+		NULL,         // no window title 
+		WS_CHILD | WS_VISIBLE | WS_VSCROLL |
+		ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+		260, 160, 215, 300,   // set size in WM_SIZE message 
+		hwnd,         // parent window 
+		(HMENU)APPEND_CONSOLE,   // edit control ID 
+		NULL,
+		NULL);        // pointer not needed 
+
+	
+	return hwndConsole;
+
+}
+
+
+
+
+void printToConsoleControl(HWND hwnd, LPWSTR text)
+{
+	
+	 // get edit control from dialog
+	HWND hwndOutput = GetDlgItem(hwnd, APPEND_CONSOLE);
+
+	// get the current selection
+	DWORD StartPos, EndPos;
+	SendMessage(hwndOutput, EM_GETSEL, reinterpret_cast<WPARAM>(&StartPos), reinterpret_cast<WPARAM>(&EndPos));
+
+	// move the caret to the end of the text
+	int outLength = GetWindowTextLength(hwndOutput);
+	SendMessage(hwndOutput, EM_SETSEL, outLength, outLength);
+
+	// insert the text at the new caret position
+
+	SendMessage(hwndOutput, EM_REPLACESEL, TRUE, (LPARAM)text);
+
+	// restore the previous selection
+	SendMessage(hwndOutput, EM_SETSEL, StartPos, EndPos);
+
+	
 }
