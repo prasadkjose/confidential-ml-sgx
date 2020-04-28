@@ -14,7 +14,7 @@ VOID CALLBACK FileIOCompletionRoutine(
 	__in  LPOVERLAPPED lpOverlapped)
 {
 	_tprintf(TEXT("Error code:\t%x\n"), dwErrorCode);
-	_tprintf(TEXT("FileIOHandler : Number of bytes:\t%x\n"), dwNumberOfBytesTransfered);
+	_tprintf(TEXT("FileIOHandler : Number of bytes:\t%d\n"), dwNumberOfBytesTransfered);
 	g_BytesTransferred = dwNumberOfBytesTransfered;
 }
 
@@ -102,7 +102,7 @@ void readFile(LPCTSTR path, PBYTE ReadBuf, DWORD cbBuffer)
 	// Read one character less than the buffer size to save room for
 	// the terminating NULL character. 
 
-	if (FALSE == ReadFileEx(hFile, ReadBuffer, cbBuffer - 1, &ol, FileIOCompletionRoutine))
+	if (FALSE == ReadFileEx(hFile, ReadBuffer, cbBuffer, &ol, FileIOCompletionRoutine))
 	{
 		DisplayError(TEXT("ReadFile"));
 		printf("Terminal failure: Unable to read from file.\n GetLastError=%08x\n", GetLastError());
@@ -114,9 +114,9 @@ void readFile(LPCTSTR path, PBYTE ReadBuf, DWORD cbBuffer)
 	// This is the section of code that assumes the file is ANSI text. 
 	// Modify this block for other data types if needed.
 
-	if ( dwBytesRead <= cbBuffer -1 )
+	if ( dwBytesRead <= cbBuffer  )
 	{
-		ReadBuffer[dwBytesRead] = '\0'; // NULL character
+		//ReadBuffer[dwBytesRead] = '\0'; // NULL character
 
 		_tprintf(TEXT("FileIOHandler : Data read from %s (%d bytes): \n"), path, dwBytesRead);
 		printf("%x\n", ReadBuffer);

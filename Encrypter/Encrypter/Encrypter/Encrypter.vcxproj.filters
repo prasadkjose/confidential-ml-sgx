@@ -25,6 +25,9 @@
     <Filter Include="Source Files\NeuralCLI">
       <UniqueIdentifier>{ad262b6d-ff93-41e3-b984-15c8fbd7792d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DecrypterCLI">
+      <UniqueIdentifier>{b842f40b-7413-475b-9ed7-59cd7e894e31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -80,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="PrintConsole.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\EncrypterCLI\EncrypterCLI\decrypt.cpp">
+      <Filter>Source Files\DecrypterCLI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

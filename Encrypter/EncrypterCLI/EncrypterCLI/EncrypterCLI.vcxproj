@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="decrypt.cpp" />
     <ClCompile Include="Decrypter.cpp" />
     <ClCompile Include="EncrypterCLI.cpp" />
     <ClCompile Include="FileIOHandler.cpp" />

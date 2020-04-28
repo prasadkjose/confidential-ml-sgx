@@ -33,8 +33,8 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 	*/
 	//printf("%d", sizeof(rgbPlaintext));
 
-	BYTE rgbPlaintext[16] = { 0 };
-	readFile(PlaintextPath, rgbPlaintext, 16);
+	BYTE rgbPlaintext[40] = { 0 };
+	readFile(PlaintextPath, rgbPlaintext, 40);
 
 
 	BCRYPT_ALG_HANDLE       hAesAlg = NULL;
@@ -185,10 +185,10 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		//writeFile(TEXT("TestOutKey.txt"), pbBlob, cbBlob);
 		writeFile(KeyBlobPath, pbBlob, cbBlob);
 		printf("\n%d Size of key blob = ", cbBlob);
-		for (int i = 0; i < cbBlob; i++)
+		/*for (int i = 0; i < cbBlob; i++)
 		{
 			printf(" \n byte: %d Data : %X\n",i, pbBlob[i]);
-		}
+		}*/
 
 	}
 	//-------------------------------------------------------------------------
@@ -317,14 +317,14 @@ Cleanup:
 	}
 
 }
-
-void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
-{
-	
-	UNREFERENCED_PARAMETER(argc);
-	UNREFERENCED_PARAMETER(wargv);
-	BYTE rgbAES128Key[16] =
-	{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
-	encrypter(TEXT("Text.txt"), rgbAES128Key, TEXT("keyOut.txt"), TEXT("CT.txt"));
-
-}
+//
+//void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
+//{
+//	
+//	UNREFERENCED_PARAMETER(argc);
+//	UNREFERENCED_PARAMETER(wargv);
+//	BYTE rgbAES128Key[16] =
+//	{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+//	encrypter(TEXT("Text.txt"), rgbAES128Key, TEXT("CT.txt"), TEXT("keyBlob.txt"));
+//
+//}

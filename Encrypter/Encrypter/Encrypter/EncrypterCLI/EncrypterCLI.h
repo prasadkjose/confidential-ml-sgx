@@ -28,3 +28,4 @@ static const BYTE rgbIV[] =
 
 
 BOOL encrypter(LPCTSTR, LPCTSTR, LPCTSTR);
+void decrypt(LPCTSTR, LPCTSTR, LPCTSTR);

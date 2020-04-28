@@ -102,7 +102,7 @@ void readFile(LPCTSTR path, PBYTE ReadBuf, DWORD cbBuffer)
 	// Read one character less than the buffer size to save room for
 	// the terminating NULL character. 
 
-	if (FALSE == ReadFileEx(hFile, ReadBuffer, cbBuffer - 1, &ol, FileIOCompletionRoutine))
+	if (FALSE == ReadFileEx(hFile, ReadBuffer, cbBuffer, &ol, FileIOCompletionRoutine))
 	{
 		DisplayError(TEXT("ReadFile"));
 		printf("Terminal failure: Unable to read from file.\n GetLastError=%08x\n", GetLastError());
@@ -116,7 +116,7 @@ void readFile(LPCTSTR path, PBYTE ReadBuf, DWORD cbBuffer)
 
 	if ( dwBytesRead <= cbBuffer -1 )
 	{
-		ReadBuffer[dwBytesRead] = '\0'; // NULL character
+		//ReadBuffer[dwBytesRead] = '\0'; // NULL character
 
 		_tprintf(TEXT("FileIOHandler : Data read from %s (%d bytes): \n"), path, dwBytesRead);
 		printf("%x\n", ReadBuffer);

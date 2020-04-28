@@ -13,4 +13,4 @@
 
 
 void encrypter(LPCTSTR, BYTE, LPCTSTR, LPCTSTR);
-void decrypter();
+void decrypt(LPCTSTR, LPCTSTR, LPCTSTR);

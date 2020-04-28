@@ -144,29 +144,36 @@ int mainNN()
 {
   data_handler *dh = new data_handler();
 //#ifdef MNIST
-  dh->read_input_data("data/train-images-idx3-ubyte");
-  dh->read_label_data("data/train-labels-idx1-ubyte");
-  dh->normalize();
+  dh->read_input_data("data/t10k-images-idx3-ubyte");
+  dh->read_label_data("data/t10k-labels-idx1-ubyte");
 //#else
   //dh->read_csv("/home/gerardta/iris.data", ",");
 //#endif
+
+
+  dh->normalize();
+
   dh->count_classes();
   dh->split_data();
-  std::vector<int> hiddenLayers = {50};
+  std::vector<int> hiddenLayers = { 50 };
   Network *net = new Network(hiddenLayers, dh->get_test_data()->at(0)->get_normalized_feature_vector()->size(), dh->get_class_counts());
   net->set_training_data(dh->get_training_data());
   net->set_test_data(dh->get_test_data());
   net->set_validation_data(dh->get_validation_data());
- 
-  for (int i = 0; i < 10; i++)
+  
+  for (int i = 0; i < 2; i++)
   {	
+	  
+
 	  wchar_t buf[100];
 	  int len = swprintf_s(buf, 100, L"%s%d", L"Iteration:",i);
 	  __printf((LPWSTR)buf);
+
 	  net->train();
 
   }
-	 
-  net->test();
+  delete(dh);
+  delete(net);
+  //net->test();
   return 1;
 }
