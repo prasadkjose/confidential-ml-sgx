@@ -155,7 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\EncrypterCLI\EncrypterCLI\decrypt.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="EncrypterCLI\EncrypterCLI.cpp" />
     <ClCompile Include="EncrypterCLI\FileIOHandler.cpp" />

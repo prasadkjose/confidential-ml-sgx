@@ -24,9 +24,6 @@
     <ClCompile Include="FileIOHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Decrypter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="decrypt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

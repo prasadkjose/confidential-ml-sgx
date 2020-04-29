@@ -9,6 +9,8 @@
 #include <map>
 #include <unordered_set>
 #include <math.h>
+#include "../PrintConsole.h"
+
 
 class data_handler
 {
@@ -22,9 +24,9 @@ class data_handler
   std::map<std::string, int> classMap; //string key
 
   public:
-  const double TRAIN_SET_PERCENT = 0.02;
-  const double TEST_SET_PERCENT = .007;
-  const double VALID_SET_PERCENT = 0.005;
+  const double TRAIN_SET_PERCENT = 0.5;
+  const double TEST_SET_PERCENT = 0.1;
+  const double VALID_SET_PERCENT = 0.01;
 
   data_handler();
   ~data_handler();
