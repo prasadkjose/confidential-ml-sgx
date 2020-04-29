@@ -20,15 +20,18 @@ void addFileEncrypterUploadControls(HWND hwnd)
 void uploadFileEncrypterProc(HWND hwnd)
 {
 	//-------------------------------------------------------------------------------------------------------
-	// This function take a file and copies it to the Data directory
+	// This function take a file and Encrypts it to the crypto directory along with the KeyBlob
 	// @PARAM HWND window handler of  the Main app
 
 
 	OPENFILENAME ofn;
 
+	Crypto encrypt;
+
+
 	//The file name selected will be stored here
 	char file_name[100];
-
+	DWORD file_size = 10;
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
 		COINIT_DISABLE_OLE1DDE);
 	if (SUCCEEDED(hr))
@@ -60,12 +63,30 @@ void uploadFileEncrypterProc(HWND hwnd)
 						// concatenate the string with the Data directory path
 						wchar_t saveTo[100] = L"Data/";
 						wcscat_s(saveTo, 100, L"text.txt");
+						
+					//Get the size of the file to be encrypted. 
+						if (fileSize(pszFilePath, &file_size))
+						{
+							/*char size[10];
+							sprintf_s(size, "%d", file_size);
+							MessageBoxA(NULL, (LPCSTR)size, "File Enrypter", MB_OK);*/
+
+							//To check Decrypt function
+							//encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/keyOut.txt"), TEXT("crypt/PT.txt"))
+
+							if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/CT.txt"), TEXT("crypt/keyOut.txt")))
+								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+							else
+								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
+						}
+						else 
+							MessageBox(NULL, L"Get File Size Error", L"File Enrypter", MB_OK);
 
 
-						if (encrypter(pszFilePath, TEXT("crypt/CT.txt"), TEXT("crypt/keyOut.txt")))
-							MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
-						else
-							MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
+						
+
+						
+						
 
 
 						//	//Call ReadFile with the buffer initialized above.

@@ -144,8 +144,8 @@ int mainNN()
 {
   data_handler *dh = new data_handler();
 //#ifdef MNIST
-  dh->read_input_data("data/t10k-images-idx3-ubyte");
-  dh->read_label_data("data/t10k-labels-idx1-ubyte");
+  dh->read_input_data("data/300-train");
+  dh->read_label_data("data/300-labels");
 //#else
   //dh->read_csv("/home/gerardta/iris.data", ",");
 //#endif
@@ -161,7 +161,7 @@ int mainNN()
   net->set_test_data(dh->get_test_data());
   net->set_validation_data(dh->get_validation_data());
   
-  for (int i = 0; i < 2; i++)
+  for (int i = 0; i < 5; i++)
   {	
 	  
 
@@ -172,8 +172,9 @@ int mainNN()
 	  net->train();
 
   }
+  net->test();
+
   delete(dh);
   delete(net);
-  //net->test();
   return 1;
 }

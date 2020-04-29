@@ -12,7 +12,7 @@
 #include <tchar.h>
 #include <stdio.h>
 #include <strsafe.h>
-
+#include <filesystem>
 
 
 void DisplayError(LPCTSTR lpszFunction);
@@ -25,3 +25,4 @@ VOID CALLBACK FileIOCompletionRoutine(
 
 void readFile(LPCTSTR, PBYTE, DWORD);
 void writeFile(LPCTSTR, PBYTE, DWORD);
+bool fileSize(LPCTSTR, DWORD*);

@@ -205,8 +205,16 @@ void data_handler::split_data()
   }
 
   printf("Training Data Size: %lu.\n", training_data->size());
+  wchar_t buf[100];
+  swprintf_s(buf, 100, L"%s%lu", L"Training Data Size: \n", training_data->size() );
+  __printf((LPWSTR)buf);
+
   printf("Test Data Size: %lu.\n", test_data->size());
+  wchar_t buf1[100];
+  swprintf_s(buf1, 100, L"%s%lu", L"Test Data Size: \n", test_data->size());
+  __printf((LPWSTR)buf1);
   printf("Validation Data Size: %lu.\n", validation_data->size());
+
 }
 
 void data_handler::count_classes()

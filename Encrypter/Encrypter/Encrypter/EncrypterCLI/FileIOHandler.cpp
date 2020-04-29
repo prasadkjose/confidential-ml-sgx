@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <strsafe.h>
 #include "FileIOHandler.h"
+#include "../PrintConsole.h"
+namespace fs = std::filesystem;
+
 
 DWORD g_BytesTransferred = 0;
 
@@ -114,7 +117,7 @@ void readFile(LPCTSTR path, PBYTE ReadBuf, DWORD cbBuffer)
 	// This is the section of code that assumes the file is ANSI text. 
 	// Modify this block for other data types if needed.
 
-	if ( dwBytesRead <= cbBuffer -1 )
+	if ( dwBytesRead <= cbBuffer)
 	{
 		//ReadBuffer[dwBytesRead] = '\0'; // NULL character
 
@@ -210,6 +213,23 @@ void writeFile(LPCTSTR path, PBYTE DataBuffer, DWORD cbBuffer)
 	}
 
 	CloseHandle(hFile);
+
+}
+
+bool fileSize(LPCTSTR path, DWORD* size)
+{
+	if (fs::file_size(path))
+	{
+		*size = fs::file_size(path);
+		/*char szTest[10];
+		sprintf_s(szTest, "%d", fs::file_size(path));
+		MessageBoxA(NULL, szTest, "File Enrypter", MB_OK);*/
+
+
+		return true;
+	}
+	else
+		return false;
 
 }
 
