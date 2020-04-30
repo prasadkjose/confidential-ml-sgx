@@ -77,15 +77,20 @@ void uploadFileEncrypterProc(HWND hwnd)
 							{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
 
 
-							if (encrypt.generateAESKey(rgbAES128Key, TEXT("crypt/KeyBlobGenerated.txt")))
-								MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
-							else
-								MessageBox(NULL, L"Key Error", L"File Enrypter", MB_OK);
+							//if (encrypt.generateAESKey(rgbAES128Key, TEXT("crypt/KeyBlobGenerated.txt")))
+							//	MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
+							//else
+							//	MessageBox(NULL, L"Key Error", L"File Enrypter", MB_OK);
 							
-							/*if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/CT.txt"), TEXT("crypt/keyOut.txt")))
+							/*if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/CT.txt")))
 								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
 							else
 								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);*/
+							
+							if (encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/PTT.txt")))
+								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+							else
+								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
 						}
 						else 
 							MessageBox(NULL, L"Get File Size Error", L"File Enrypter", MB_OK);

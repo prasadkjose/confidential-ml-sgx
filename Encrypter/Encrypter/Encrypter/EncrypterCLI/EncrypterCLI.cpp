@@ -168,15 +168,14 @@ Cleanup:
 
 }
 
-bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath, LPCTSTR KeyBlobPath)
+bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR KeyBlobPath, LPCTSTR  EncryptedPath)
 {
 	/* --------------------------------------------------------------------	
 	Encrypter Function 
 	@PARAM LPCTSTR PlaintextPath
 	@PARAM DWORD cbPText
-	@PARAM BYTE rgbAES128Key
-	@PARAM LPCTSTR EncryptedPath
-	@PARAM LPCTSTR KeyBlobPath
+	@PARAM LPCTSTR KeyBlobPath - KeyBlob to import
+	@PARAM LPCTSTR EncryptedPath 
 	-----------------------------------------------------------------------
 	*/
 	PBYTE rgbPlaintext = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbPText);
@@ -207,13 +206,31 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 		cbData = 0,
 		cbKeyObject = 0,
 		cbBlockLen = 0,
-		cbBlob = 0;
+		cbBlob = 560;
 	//Buffers
 	PBYTE                   pbCipherText = NULL,
 		pbPlainText = NULL,
 		pbKeyObject = NULL,
 		pbIV = NULL,
 		pbBlob = NULL;
+
+
+
+
+	//Read key from File
+	// Allocate the buffer to hold the BLOB.
+	pbBlob = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlob);
+	//BYTE rgbKeyBlob[560] = { 0 };
+
+	wprintf(L"*****Reading Key Blob from file******************\n");
+
+	//readFile(TEXT("keyBlob.txt"), pbBlob, cbBlob);
+	readFile(KeyBlobPath, pbBlob, cbBlob);
+	/*for (int i = 0; i < cbBlob; i++)
+	{
+		printf(" \n byte: %d Data : %x\n",i, pbBlob[i]);
+	}*/
+	wprintf(L"*****Done Reading Key Blob from file******************\n\n\n");
 
 
 	// Open an algorithm handle.
@@ -225,7 +242,6 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
 		goto Cleanup;
-		return false;
 
 	}
 
@@ -240,8 +256,6 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
 		goto Cleanup;
-		return false;
-
 	}
 
 	// Allocate the key object on the heap.
@@ -250,8 +264,6 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** memory allocation failed\n");
 		goto Cleanup;
-		return false;
-
 	}
 
 	// Calculate the block length for the IV.
@@ -265,8 +277,10 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
 		goto Cleanup;
-		return false;
-
+	}
+	else
+	{
+		wprintf(L"cbBlock length : %d \n", cbBlockLen);
 	}
 
 	// Determine whether the cbBlockLen is not longer than the IV length.
@@ -274,8 +288,6 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** block length is longer than the provided IV length\n");
 		goto Cleanup;
-		return false;
-
 	}
 
 	// Allocate a buffer for the IV. The buffer is consumed during the 
@@ -285,12 +297,13 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** memory allocation failed\n");
 		goto Cleanup;
-		return false;
-
 	}
 
 	memcpy(pbIV, rgbIV, cbBlockLen);
-
+	/*wprintf(L"IV is :\n");
+	for (int i = 0; i < cbBlockLen; i++)
+		printf("%x \n", pbIV[i]);
+*/
 	if (!NT_SUCCESS(status = BCryptSetProperty(
 		hAesAlg,
 		BCRYPT_CHAINING_MODE,
@@ -300,87 +313,57 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptSetProperty\n", status);
 		goto Cleanup;
-		return false;
-
 	}
 
-	// Generate the key from supplied input key bytes.
-	if (!NT_SUCCESS(status = BCryptGenerateSymmetricKey(
-		hAesAlg,
-		&hKey,
-		pbKeyObject,
-		cbKeyObject,
-		(PBYTE)rgbAES128Key,
-		sizeof(rgbAES128Key),
-		0)))
+
+
+	hKey = 0;
+
+	if (pbPlainText)
 	{
-		wprintf(L"**** Error 0x%x returned by BCryptGenerateSymmetricKey\n", status);
-		goto Cleanup;
-		return false;
-
+		HeapFree(GetProcessHeap(), 0, pbPlainText);
 	}
 
-	//-------------------------------------------------------------------------
-	// Save another copy of the key for later.
-	//-------------------------------------------------------------------------
+	pbPlainText = NULL;
 
-	if (!NT_SUCCESS(status = BCryptExportKey(
-		hKey,
-		NULL,
-		BCRYPT_OPAQUE_KEY_BLOB,
-		NULL,
-		0,
-		&cbBlob,
-		0)))
-	{
-		wprintf(L"**** Error 0x%x returned by BCryptExportKey\n", status);
-		goto Cleanup;
-		return false;
-
-	}
+	// We can reuse the key object.
+	//memset(pbKeyObject, 0, cbKeyObject);
 
 
-	// Allocate the buffer to hold the BLOB.
-	pbBlob = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlob);
+
+
+
 	if (NULL == pbBlob)
 	{
 		wprintf(L"**** memory allocation failed\n");
 		goto Cleanup;
-		return false;
-
 	}
 
-	if (!NT_SUCCESS(status = BCryptExportKey(
-		hKey,
+	if (!NT_SUCCESS(status = BCryptImportKey(
+		hAesAlg,
 		NULL,
 		BCRYPT_OPAQUE_KEY_BLOB,
+		&hKey,
+		pbKeyObject,
+		cbKeyObject,
 		pbBlob,
 		cbBlob,
-		&cbBlob,
 		0)))
 	{
-		wprintf(L"**** Error 0x%x returned by BCryptExportKey\n", status);
+		wprintf(L"**** Error 0x%x returned by BCryptImportSymmetricKey\n", status);
+
 		goto Cleanup;
-		return false;
-
 	}
-	else {
-		//writeFile(TEXT("TestOutKey.txt"), pbBlob, cbBlob);
-		writeFile(KeyBlobPath, pbBlob, cbBlob);
-		printf("\n%d Size of key blob = ", cbBlob);
-		for (int i = 0; i < cbBlob; i++)
-		{
-			printf(" \n byte: %d Data : %X\n",i, pbBlob[i]);
-		}
 
-	}
-	//-------------------------------------------------------------------------
+
 
 	//-------------------------------------------------------------------------
 	// Main Encryption
 	//-------------------------------------------------------------------------
 
-	cbPlainText = cbPText;
+
+	cbPlainText = cbPText; // Assign the PT size from the formal parameter
+
 	pbPlainText = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbPlainText);
 	if (NULL == pbPlainText)
 	{
