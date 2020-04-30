@@ -17,55 +17,29 @@ Crypto::Crypto(){
 	
 };
 
-
-bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath, LPCTSTR KeyBlobPath)
-{
-	/* --------------------------------------------------------------------	
-	Encrypter Function 
-	@PARAM LPCTSTR PlaintextPath
-	@PARAM DWORD cbPText
-	@PARAM BYTE rgbAES128Key
-	@PARAM LPCTSTR EncryptedPath
-	@PARAM LPCTSTR KeyBlobPath
-	-----------------------------------------------------------------------
+bool Crypto::generateAESKey(PBYTE rgbAES128Key, LPCTSTR KeyBlobPath) {
+	/* --------------------------------------------------------------------
+	AES 128 key generation Function
+	@PARAM BYTE rgbAES128Key - 16 bytes
+	@PARAM LPCTSTR KeyBlobPath destination 
+	@PARAM PBYTE Key Blob buffer //TODO
 	*/
-	PBYTE rgbPlaintext = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbPText);
-	readFile(PlaintextPath, rgbPlaintext, cbPText);
-
-	//Print the size of Plaintext
-	//printf("%d", sizeof(rgbPlaintext));
-	/*char size[10];
-	sprintf_s(size, "%d", sizeof(rgbPlaintext));
-	MessageBoxA(NULL, (LPCSTR)size, "File Read", MB_OK);*/
-
-	BYTE rgbAES128Key[] =
-	{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
-
-	static const BYTE rgbIV[] =
-	{
-		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-		0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
-	};
-
+	// rgbAES128Key = (PBYTE)HeapAlloc(GetProcessHeap(), 0, 16);
+	
 
 	BCRYPT_ALG_HANDLE       hAesAlg = NULL;
 	BCRYPT_KEY_HANDLE       hKey = NULL;
 	NTSTATUS                status = STATUS_UNSUCCESSFUL;
 	//Size in bytes of the buffers. 
-	DWORD                   cbCipherText = 0,
-		cbPlainText = 0,
-		cbData = 0,
+	DWORD     
+		cbegbKeySize = 16,
 		cbKeyObject = 0,
-		cbBlockLen = 0,
-		cbBlob = 0;
+		cbData = 0,
+		cbBlob = 560;
 	//Buffers
-	PBYTE                   pbCipherText = NULL,
-		pbPlainText = NULL,
+	PBYTE                   
 		pbKeyObject = NULL,
-		pbIV = NULL,
 		pbBlob = NULL;
-
-
 	// Open an algorithm handle.
 	if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(
 		&hAesAlg,
@@ -75,7 +49,6 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
 		goto Cleanup;
-		return false;
 
 	}
 
@@ -90,8 +63,6 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
 		goto Cleanup;
-		return false;
-
 	}
 
 	// Allocate the key object on the heap.
@@ -100,59 +71,8 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 	{
 		wprintf(L"**** memory allocation failed\n");
 		goto Cleanup;
-		return false;
-
 	}
 
-	// Calculate the block length for the IV.
-	if (!NT_SUCCESS(status = BCryptGetProperty(
-		hAesAlg,
-		BCRYPT_BLOCK_LENGTH,
-		(PBYTE)&cbBlockLen,
-		sizeof(DWORD),
-		&cbData,
-		0)))
-	{
-		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
-		goto Cleanup;
-		return false;
-
-	}
-
-	// Determine whether the cbBlockLen is not longer than the IV length.
-	if (cbBlockLen > sizeof(rgbIV))
-	{
-		wprintf(L"**** block length is longer than the provided IV length\n");
-		goto Cleanup;
-		return false;
-
-	}
-
-	// Allocate a buffer for the IV. The buffer is consumed during the 
-	// encrypt/decrypt process.
-	pbIV = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlockLen);
-	if (NULL == pbIV)
-	{
-		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
-		return false;
-
-	}
-
-	memcpy(pbIV, rgbIV, cbBlockLen);
-
-	if (!NT_SUCCESS(status = BCryptSetProperty(
-		hAesAlg,
-		BCRYPT_CHAINING_MODE,
-		(PBYTE)BCRYPT_CHAIN_MODE_CBC,
-		sizeof(BCRYPT_CHAIN_MODE_CBC),
-		0)))
-	{
-		wprintf(L"**** Error 0x%x returned by BCryptSetProperty\n", status);
-		goto Cleanup;
-		return false;
-
-	}
 
 	// Generate the key from supplied input key bytes.
 	if (!NT_SUCCESS(status = BCryptGenerateSymmetricKey(
@@ -160,14 +80,17 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 		&hKey,
 		pbKeyObject,
 		cbKeyObject,
-		(PBYTE)rgbAES128Key,
-		sizeof(rgbAES128Key),
+		rgbAES128Key,
+		cbegbKeySize,
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGenerateSymmetricKey\n", status);
 		goto Cleanup;
 		return false;
 
+	}
+	else	{
+		//For Debugger Breakpoint
 	}
 
 	//-------------------------------------------------------------------------
@@ -220,17 +143,227 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath
 		printf("\n%d Size of key blob = ", cbBlob);
 		for (int i = 0; i < cbBlob; i++)
 		{
-			printf(" \n byte: %d Data : %X\n",i, pbBlob[i]);
+			printf(" \n byte: %d Data : %X\n", i, pbBlob[i]);
 		}
 
 	}
-	//-------------------------------------------------------------------------
+Cleanup:
+
+	if (hAesAlg)
+	{
+		BCryptCloseAlgorithmProvider(hAesAlg, 0);
+	}
+
+	if (hKey)
+	{
+		BCryptDestroyKey(hKey);
+	}
+
+	if (pbKeyObject)
+	{
+		HeapFree(GetProcessHeap(), 0, pbKeyObject);
+	}
+
+
+
+}
+
+bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR KeyBlobPath, LPCTSTR  EncryptedPath)
+{
+	/* --------------------------------------------------------------------	
+	Encrypter Function 
+	@PARAM LPCTSTR PlaintextPath
+	@PARAM DWORD cbPText
+	@PARAM LPCTSTR KeyBlobPath - KeyBlob to import
+	@PARAM LPCTSTR EncryptedPath 
+	-----------------------------------------------------------------------
+	*/
+	PBYTE rgbPlaintext = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbPText);
+	readFile(PlaintextPath, rgbPlaintext, cbPText);
+
+	//Print the size of Plaintext
+	//printf("%d", sizeof(rgbPlaintext));
+	/*char size[10];
+	sprintf_s(size, "%d", sizeof(rgbPlaintext));
+	MessageBoxA(NULL, (LPCSTR)size, "File Read", MB_OK);*/
+
+	BYTE rgbAES128Key[] =
+	{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+
+	static const BYTE rgbIV[] =
+	{
+		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+		0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
+	};
+
+
+	BCRYPT_ALG_HANDLE       hAesAlg = NULL;
+	BCRYPT_KEY_HANDLE       hKey = NULL;
+	NTSTATUS                status = STATUS_UNSUCCESSFUL;
+	//Size in bytes of the buffers. 
+	DWORD                   cbCipherText = 0,
+		cbPlainText = 0,
+		cbData = 0,
+		cbKeyObject = 0,
+		cbBlockLen = 0,
+		cbBlob = 560;
+	//Buffers
+	PBYTE                   pbCipherText = NULL,
+		pbPlainText = NULL,
+		pbKeyObject = NULL,
+		pbIV = NULL,
+		pbBlob = NULL;
+
+
+
+
+	//Read key from File
+	// Allocate the buffer to hold the BLOB.
+	pbBlob = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlob);
+	//BYTE rgbKeyBlob[560] = { 0 };
+
+	wprintf(L"*****Reading Key Blob from file******************\n");
+
+	//readFile(TEXT("keyBlob.txt"), pbBlob, cbBlob);
+	readFile(KeyBlobPath, pbBlob, cbBlob);
+	/*for (int i = 0; i < cbBlob; i++)
+	{
+		printf(" \n byte: %d Data : %x\n",i, pbBlob[i]);
+	}*/
+	wprintf(L"*****Done Reading Key Blob from file******************\n\n\n");
+
+
+	// Open an algorithm handle.
+	if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(
+		&hAesAlg,
+		BCRYPT_AES_ALGORITHM,
+		NULL,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
+		goto Cleanup;
+
+	}
+
+	// Calculate the size of the buffer to hold the KeyObject.
+	if (!NT_SUCCESS(status = BCryptGetProperty(
+		hAesAlg,
+		BCRYPT_OBJECT_LENGTH,
+		(PBYTE)&cbKeyObject,
+		sizeof(DWORD),
+		&cbData,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+		goto Cleanup;
+	}
+
+	// Allocate the key object on the heap.
+	pbKeyObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbKeyObject);
+	if (NULL == pbKeyObject)
+	{
+		wprintf(L"**** memory allocation failed\n");
+		goto Cleanup;
+	}
+
+	// Calculate the block length for the IV.
+	if (!NT_SUCCESS(status = BCryptGetProperty(
+		hAesAlg,
+		BCRYPT_BLOCK_LENGTH,
+		(PBYTE)&cbBlockLen,
+		sizeof(DWORD),
+		&cbData,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+		goto Cleanup;
+	}
+	else
+	{
+		wprintf(L"cbBlock length : %d \n", cbBlockLen);
+	}
+
+	// Determine whether the cbBlockLen is not longer than the IV length.
+	if (cbBlockLen > sizeof(rgbIV))
+	{
+		wprintf(L"**** block length is longer than the provided IV length\n");
+		goto Cleanup;
+	}
+
+	// Allocate a buffer for the IV. The buffer is consumed during the 
+	// encrypt/decrypt process.
+	pbIV = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlockLen);
+	if (NULL == pbIV)
+	{
+		wprintf(L"**** memory allocation failed\n");
+		goto Cleanup;
+	}
+
+	memcpy(pbIV, rgbIV, cbBlockLen);
+	/*wprintf(L"IV is :\n");
+	for (int i = 0; i < cbBlockLen; i++)
+		printf("%x \n", pbIV[i]);
+*/
+	if (!NT_SUCCESS(status = BCryptSetProperty(
+		hAesAlg,
+		BCRYPT_CHAINING_MODE,
+		(PBYTE)BCRYPT_CHAIN_MODE_CBC,
+		sizeof(BCRYPT_CHAIN_MODE_CBC),
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptSetProperty\n", status);
+		goto Cleanup;
+	}
+
+
+
+	hKey = 0;
+
+	if (pbPlainText)
+	{
+		HeapFree(GetProcessHeap(), 0, pbPlainText);
+	}
+
+	pbPlainText = NULL;
+
+	// We can reuse the key object.
+	//memset(pbKeyObject, 0, cbKeyObject);
+
+
+
+
+
+	if (NULL == pbBlob)
+	{
+		wprintf(L"**** memory allocation failed\n");
+		goto Cleanup;
+	}
+
+	if (!NT_SUCCESS(status = BCryptImportKey(
+		hAesAlg,
+		NULL,
+		BCRYPT_OPAQUE_KEY_BLOB,
+		&hKey,
+		pbKeyObject,
+		cbKeyObject,
+		pbBlob,
+		cbBlob,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptImportSymmetricKey\n", status);
+
+		goto Cleanup;
+	}
+
+
 
 	//-------------------------------------------------------------------------
 	// Main Encryption
 	//-------------------------------------------------------------------------
 
-	cbPlainText = cbPText;
+
+	cbPlainText = cbPText; // Assign the PT size from the formal parameter
+
 	pbPlainText = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbPlainText);
 	if (NULL == pbPlainText)
 	{
@@ -389,7 +522,6 @@ bool Crypto::decrypt(LPCTSTR CipherTextPath, DWORD cbCText, LPCTSTR KeyBlobPath,
 	NTSTATUS                status = STATUS_UNSUCCESSFUL;
 
 	//Size in bytes of the buffers. 
-	//TODO: Dynamically allocate cbCipherText size
 	DWORD                   cbCipherText = cbCText,
 		cbPlainText = 0,
 		cbData = 0,

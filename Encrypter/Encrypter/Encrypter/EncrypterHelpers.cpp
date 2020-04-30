@@ -73,8 +73,21 @@ void uploadFileEncrypterProc(HWND hwnd)
 
 							//To check Decrypt function
 							//encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/keyOut.txt"), TEXT("crypt/PT.txt"))
+							BYTE rgbAES128Key[] =
+							{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
 
-							if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/CT.txt"), TEXT("crypt/keyOut.txt")))
+
+							//if (encrypt.generateAESKey(rgbAES128Key, TEXT("crypt/KeyBlobGenerated.txt")))
+							//	MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
+							//else
+							//	MessageBox(NULL, L"Key Error", L"File Enrypter", MB_OK);
+							
+							/*if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/CT.txt")))
+								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+							else
+								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);*/
+							
+							if (encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/PTT.txt")))
 								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
 							else
 								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
