@@ -17,6 +17,156 @@ Crypto::Crypto(){
 	
 };
 
+bool Crypto::generateAESKey(PBYTE rgbAES128Key, LPCTSTR KeyBlobPath) {
+	/* --------------------------------------------------------------------
+	AES 128 key generation Function
+	@PARAM BYTE rgbAES128Key - 16 bytes
+	@PARAM LPCTSTR KeyBlobPath destination 
+	@PARAM PBYTE Key Blob buffer //TODO
+	*/
+	// rgbAES128Key = (PBYTE)HeapAlloc(GetProcessHeap(), 0, 16);
+	
+
+	BCRYPT_ALG_HANDLE       hAesAlg = NULL;
+	BCRYPT_KEY_HANDLE       hKey = NULL;
+	NTSTATUS                status = STATUS_UNSUCCESSFUL;
+	//Size in bytes of the buffers. 
+	DWORD     
+		cbegbKeySize = 16,
+		cbKeyObject = 0,
+		cbData = 0,
+		cbBlob = 560;
+	//Buffers
+	PBYTE                   
+		pbKeyObject = NULL,
+		pbBlob = NULL;
+	// Open an algorithm handle.
+	if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(
+		&hAesAlg,
+		BCRYPT_AES_ALGORITHM,
+		NULL,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
+		goto Cleanup;
+
+	}
+
+	// Calculate the size of the buffer to hold the KeyObject.
+	if (!NT_SUCCESS(status = BCryptGetProperty(
+		hAesAlg,
+		BCRYPT_OBJECT_LENGTH,
+		(PBYTE)&cbKeyObject,
+		sizeof(DWORD),
+		&cbData,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+		goto Cleanup;
+	}
+
+	// Allocate the key object on the heap.
+	pbKeyObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbKeyObject);
+	if (NULL == pbKeyObject)
+	{
+		wprintf(L"**** memory allocation failed\n");
+		goto Cleanup;
+	}
+
+
+	// Generate the key from supplied input key bytes.
+	if (!NT_SUCCESS(status = BCryptGenerateSymmetricKey(
+		hAesAlg,
+		&hKey,
+		pbKeyObject,
+		cbKeyObject,
+		rgbAES128Key,
+		cbegbKeySize,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptGenerateSymmetricKey\n", status);
+		goto Cleanup;
+		return false;
+
+	}
+	else	{
+		//For Debugger Breakpoint
+	}
+
+	//-------------------------------------------------------------------------
+	// Save another copy of the key for later.
+	//-------------------------------------------------------------------------
+
+	if (!NT_SUCCESS(status = BCryptExportKey(
+		hKey,
+		NULL,
+		BCRYPT_OPAQUE_KEY_BLOB,
+		NULL,
+		0,
+		&cbBlob,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptExportKey\n", status);
+		goto Cleanup;
+		return false;
+
+	}
+
+
+	// Allocate the buffer to hold the BLOB.
+	pbBlob = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlob);
+	if (NULL == pbBlob)
+	{
+		wprintf(L"**** memory allocation failed\n");
+		goto Cleanup;
+		return false;
+
+	}
+
+	if (!NT_SUCCESS(status = BCryptExportKey(
+		hKey,
+		NULL,
+		BCRYPT_OPAQUE_KEY_BLOB,
+		pbBlob,
+		cbBlob,
+		&cbBlob,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptExportKey\n", status);
+		goto Cleanup;
+		return false;
+
+	}
+	else {
+		//writeFile(TEXT("TestOutKey.txt"), pbBlob, cbBlob);
+		writeFile(KeyBlobPath, pbBlob, cbBlob);
+		printf("\n%d Size of key blob = ", cbBlob);
+		for (int i = 0; i < cbBlob; i++)
+		{
+			printf(" \n byte: %d Data : %X\n", i, pbBlob[i]);
+		}
+
+	}
+Cleanup:
+
+	if (hAesAlg)
+	{
+		BCryptCloseAlgorithmProvider(hAesAlg, 0);
+	}
+
+	if (hKey)
+	{
+		BCryptDestroyKey(hKey);
+	}
+
+	if (pbKeyObject)
+	{
+		HeapFree(GetProcessHeap(), 0, pbKeyObject);
+	}
+
+
+
+}
 
 bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR EncryptedPath, LPCTSTR KeyBlobPath)
 {
@@ -389,7 +539,6 @@ bool Crypto::decrypt(LPCTSTR CipherTextPath, DWORD cbCText, LPCTSTR KeyBlobPath,
 	NTSTATUS                status = STATUS_UNSUCCESSFUL;
 
 	//Size in bytes of the buffers. 
-	//TODO: Dynamically allocate cbCipherText size
 	DWORD                   cbCipherText = cbCText,
 		cbPlainText = 0,
 		cbData = 0,
