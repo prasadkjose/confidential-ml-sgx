@@ -8,6 +8,9 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #include <windows.h>
 #include <stdio.h>
 #include "MainHelpers.h"
+
+
+
 #define IDS_FIRSTCOLUMN 0
 LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HINSTANCE   g_hInst;
@@ -88,8 +91,10 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 	case WM_CREATE:
 	{
+		
 		addFileEncrypterUploadControls(hwnd);
 		listEncryptedFilesDir(hwnd);
+		
 
 
 	}
