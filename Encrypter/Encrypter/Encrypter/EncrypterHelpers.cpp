@@ -1,5 +1,6 @@
 #include "EncrypterHelpers.h"
 #include "EncrypterCLI/EncrypterCLI.h"
+#include "DRNG.h"
 
 //-------------------------------------------------------------------------------------------------------
 //Client Dashboard Helper functions
@@ -74,32 +75,33 @@ void uploadFileEncrypterProc(HWND hwnd)
 							//To check Decrypt function
 							//encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/keyOut.txt"), TEXT("crypt/PT.txt"))
 							BYTE rgbAES128Key[] =
-							{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+							{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D','D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D','D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+							//BYTE hash[32] = { 0 };
+							//encrypt.generateHash(rgbAES128Key, sizeof(rgbAES128Key), hash);
 
+							DRNG rand;
+							BYTE a[16];
 
-							//if (encrypt.generateAESKey(rgbAES128Key, TEXT("crypt/KeyBlobGenerated.txt")))
-							//	MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
-							//else
-							//	MessageBox(NULL, L"Key Error", L"File Enrypter", MB_OK);
-							
-							/*if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/CT.txt")))
-								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+							//Generate 12bit random salt
+							rand.generate32bitRand((UINT32 *)rgbAES128Key, 16);
+													   							 						  
+							/*if (encrypt.generateAESKey(rgbAES128Key, TEXT("crypt/KeyBlobGenerated.txt")))
+								MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
 							else
-								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);*/
+								MessageBox(NULL, L"Key Error", L"File Enrypter", MB_OK);*/
 							
-							if (encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/PTT.txt")))
+							if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/CT.txt")))
 								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
 							else
 								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
+							
+							/*if (encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/PTT.txt")))
+								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+							else
+								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);*/
 						}
 						else 
 							MessageBox(NULL, L"Get File Size Error", L"File Enrypter", MB_OK);
-
-
-						
-
-						
-						
 
 
 						//	//Call ReadFile with the buffer initialized above.

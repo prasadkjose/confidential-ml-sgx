@@ -801,7 +801,152 @@ Cleanup:
 	return true;
 }
 
+bool Crypto::generateHash(PBYTE rgbMsg, DWORD cbMsg, PBYTE pbaHash)
+{
+	/* --------------------------------------------------------------------
+	Creates a 32 bit SHA256 of the input string and stores it in the out buffer.
+	@PARAM PBYTE rgbMsg
+	@PARAM DWORD cbMsg 
+	@PARAM PBYTE pbHash
 
+	Return true if succeeds
+	-----------------------------------------------------------------------
+	*/
+	//Initalize Variables for the Algorithm
+	BCRYPT_ALG_HANDLE       hAlg = NULL;
+	BCRYPT_HASH_HANDLE      hHash = NULL;
+	NTSTATUS                status = STATUS_UNSUCCESSFUL;
+	DWORD                   cbData = 0,
+		cbHash = 0,
+		cbHashObject = 0;
+	PBYTE                   pbHashObject = NULL;
+	PBYTE                   pbHash = NULL;
+
+	//open an algorithm handle
+	if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(
+		&hAlg,
+		BCRYPT_SHA256_ALGORITHM,
+		NULL,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
+		goto Cleanup;
+	}
+
+	//calculate the size of the buffer to hold the hash object
+	if (!NT_SUCCESS(status = BCryptGetProperty(
+		hAlg,
+		BCRYPT_OBJECT_LENGTH,
+		(PBYTE)&cbHashObject,
+		sizeof(DWORD),
+		&cbData,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+		goto Cleanup;
+	}
+
+	//allocate the hash object on the heap
+	pbHashObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbHashObject);
+	if (NULL == pbHashObject)
+	{
+		wprintf(L"**** memory allocation failed\n");
+		goto Cleanup;
+	}
+
+	//calculate the length of the hash
+	if (!NT_SUCCESS(status = BCryptGetProperty(
+		hAlg,
+		BCRYPT_HASH_LENGTH,
+		(PBYTE)&cbHash,
+		sizeof(DWORD),
+		&cbData,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
+		goto Cleanup;
+	}
+
+	//allocate the hash buffer on the heap
+	pbHash = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbHash);
+	if (NULL == pbHash)
+	{
+		wprintf(L"**** memory allocation failed\n");
+		goto Cleanup;
+	}
+
+	//create a hash
+	if (!NT_SUCCESS(status = BCryptCreateHash(
+		hAlg,
+		&hHash,
+		pbHashObject,
+		cbHashObject,
+		NULL,
+		0,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptCreateHash\n", status);
+		goto Cleanup;
+	}
+
+
+	//hash some data
+	if (!NT_SUCCESS(status = BCryptHashData(
+		hHash,
+		rgbMsg,
+		cbMsg,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptHashData\n", status);
+		goto Cleanup;
+	}
+
+	//close the hash
+	if (!NT_SUCCESS(status = BCryptFinishHash(
+		hHash,
+		pbHash,
+		cbHash,
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptFinishHash\n", status);
+		goto Cleanup;
+	}
+
+	wprintf(L"Success!\n");
+	memcpy(pbaHash, pbHash, cbHash);
+	return true;
+
+
+Cleanup:
+
+	if (hAlg)
+	{
+		BCryptCloseAlgorithmProvider(hAlg, 0);
+		return false;
+	}
+
+	if (hHash)
+	{
+		BCryptDestroyHash(hHash);
+		return false;
+
+	}
+
+	if (pbHashObject)
+	{
+		HeapFree(GetProcessHeap(), 0, pbHashObject);
+		return false;
+
+	}
+
+	if (pbHash)
+	{
+		HeapFree(GetProcessHeap(), 0, pbHash);
+		return false;
+
+	}
+
+}
 
 //void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
 //{

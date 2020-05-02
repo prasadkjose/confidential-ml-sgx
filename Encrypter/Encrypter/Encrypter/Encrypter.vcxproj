@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="DRNG.cpp" />
     <ClCompile Include="EncrypterCLI\EncrypterCLI.cpp" />
     <ClCompile Include="EncrypterCLI\FileIOHandler.cpp" />
     <ClCompile Include="EncrypterHelpers.cpp" />
@@ -176,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
+    <ClInclude Include="DRNG.h" />
     <ClInclude Include="EncrypterCLI\EncrypterCLI.h" />
     <ClInclude Include="EncrypterCLI\FileIOHandler.h" />
     <ClInclude Include="EncrypterHelpers.h" />

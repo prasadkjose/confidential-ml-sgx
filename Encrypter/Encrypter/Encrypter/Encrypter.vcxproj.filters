@@ -81,6 +81,9 @@
     <ClCompile Include="PrintConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DRNG.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainHelpers.h">
@@ -132,6 +135,9 @@
       <Filter>Header Files\NeuralCLI</Filter>
     </ClInclude>
     <ClInclude Include="PrintConsole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DRNG.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
