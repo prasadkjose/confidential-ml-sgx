@@ -27,5 +27,5 @@ public:
 	bool generateAESKey(PBYTE, LPCTSTR);
 	bool encrypt(LPCTSTR, DWORD, LPCTSTR, LPCTSTR);
 	bool decrypt(LPCTSTR, DWORD, LPCTSTR, LPCTSTR);
-
+	bool generateHash(PBYTE, DWORD, PBYTE);
 };

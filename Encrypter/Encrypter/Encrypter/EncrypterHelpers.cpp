@@ -75,10 +75,12 @@ void uploadFileEncrypterProc(HWND hwnd)
 							//To check Decrypt function
 							//encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/keyOut.txt"), TEXT("crypt/PT.txt"))
 							BYTE rgbAES128Key[] =
-							{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+							{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D','D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D','D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+							//BYTE hash[32] = { 0 };
+							//encrypt.generateHash(rgbAES128Key, sizeof(rgbAES128Key), hash);
 
 							DRNG rand;
-							//BYTE a[16];
+							BYTE a[16];
 
 							//Generate 12bit random salt
 							rand.generate32bitRand((UINT32 *)rgbAES128Key, 16);
@@ -100,12 +102,6 @@ void uploadFileEncrypterProc(HWND hwnd)
 						}
 						else 
 							MessageBox(NULL, L"Get File Size Error", L"File Enrypter", MB_OK);
-
-
-						
-
-						
-						
 
 
 						//	//Call ReadFile with the buffer initialized above.
