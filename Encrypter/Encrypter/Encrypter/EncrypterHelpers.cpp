@@ -1,6 +1,8 @@
 #include "EncrypterHelpers.h"
 #include "EncrypterCLI/EncrypterCLI.h"
+#include "EncrypterCLI/FileIOHandler.h"
 #include "DRNG.h"
+
 
 //-------------------------------------------------------------------------------------------------------
 //Client Dashboard Helper functions
@@ -79,26 +81,31 @@ void uploadFileEncrypterProc(HWND hwnd)
 							//BYTE hash[32] = { 0 };
 							//encrypt.generateHash(rgbAES128Key, sizeof(rgbAES128Key), hash);
 
+							char in[] = "Prasad";
+							char out[100];
+
+							generateFileName(in, out , PLAINTEXT);
 							DRNG rand;
-							BYTE a[16];
 
 							//Generate 12bit random salt
-							rand.generate32bitRand((UINT32 *)rgbAES128Key, 16);
+							//rand.generate32bitRand((UINT32 *)rgbAES128Key, 16);
 													   							 						  
 							/*if (encrypt.generateAESKey(rgbAES128Key, TEXT("crypt/KeyBlobGenerated.txt")))
 								MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
 							else
 								MessageBox(NULL, L"Key Error", L"File Enrypter", MB_OK);*/
-							
-							if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/CT.txt")))
-								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
-							else
-								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
-							
-							/*if (encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/PTT.txt")))
+							wchar_t c[100] = L"crypt/";
+							wcscat_s(c, 100, (LPCWSTR)out);
+
+							/*if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), c))
 								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
 							else
 								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);*/
+							
+							if (encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/PTT1.txt")))
+								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+							else
+								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
 						}
 						else 
 							MessageBox(NULL, L"Get File Size Error", L"File Enrypter", MB_OK);
@@ -147,7 +154,7 @@ void listEncryptedFilesDir(HWND hwnd)
 		while (FindNextFile(hFind, &FindFileData))
 		{
 			//MessageBox(NULL, FindFileData.cFileName, L"File Copy", MB_OK);
-			CreateWindowW(L"Static", FindFileData.cFileName, WS_VISIBLE | WS_CHILD | SS_CENTER | SS_NOTIFY, 72, y, 200, 20, hwnd, NULL, NULL, NULL);
+			CreateWindowW(L"Static", FindFileData.cFileName, WS_VISIBLE | WS_CHILD | SS_CENTER | SS_NOTIFY, 72, y, 200, 20, hwnd, (HMENU)SAVE_ENCRYPTED, NULL, NULL);
 			y = y + 25;
 
 		}

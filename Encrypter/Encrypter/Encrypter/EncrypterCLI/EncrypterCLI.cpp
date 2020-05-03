@@ -914,6 +914,7 @@ bool Crypto::generateHash(PBYTE rgbMsg, DWORD cbMsg, PBYTE pbaHash)
 
 	wprintf(L"Success!\n");
 	memcpy(pbaHash, pbHash, cbHash);
+
 	return true;
 
 

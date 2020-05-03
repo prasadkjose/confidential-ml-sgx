@@ -6,6 +6,8 @@
 #include <strsafe.h>
 #include "FileIOHandler.h"
 #include "../PrintConsole.h"
+#include "EncrypterCLI.h"
+
 namespace fs = std::filesystem;
 
 
@@ -233,6 +235,50 @@ bool fileSize(LPCTSTR path, DWORD* size)
 
 }
 
+bool generateFileName(LPSTR pbInput, LPSTR pbfileName, int flag) {
+
+	Crypto hash;
+	PBYTE hashOut = (PBYTE)HeapAlloc(GetProcessHeap(), 0, 32);
+	hash.generateHash((PBYTE)pbInput, sizeof(pbInput), hashOut);
+	//PBYTE a = (PBYTE)HeapAlloc(GetProcessHeap(), 0, 100);
+	//memcpy(a, hashOut, 32);
+
+
+	switch (flag)
+	{
+		 
+	case PLAINTEXT:
+	{
+		char a[] = ".PT" ;
+		memcpy(hashOut+32, a, sizeof(a));
+		/*sprintf_s(format, 10, "%s", ".PT");
+		strcat_s(a, 50, format);*/
+		break;
+	}
+	case CIPHERTEXT:
+	{
+		char a[] = ".CT";
+		memcpy(hashOut + 32, a, sizeof(a));
+		break;
+
+	}
+	case BLOB:
+	{
+		char a[] = ".BLOB";
+		memcpy(hashOut + 32, a, sizeof(a));
+		break;
+
+	}
+	}
+
+	memcpy(pbfileName, hashOut, 100);
+
+
+	
+	HeapFree(GetProcessHeap(), 0, hashOut);
+
+	return true;
+}
 //void __cdecl _tmain()
 //{
 //	//-------------------------------------------------------------------------

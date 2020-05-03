@@ -117,16 +117,23 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		{
 			uploadFileEncrypterProc(hwnd);
 			listEncryptedFilesDir(hwnd);
+			break;
+		}
+		case SAVE_ENCRYPTED:
+		{
+			if(HIWORD(wParam) == STN_CLICKED) 
+			{
+				wchar_t fileName[100];
+				GetWindowTextW((HWND)lParam, (LPWSTR)fileName, 100);
+				//MessageBox(NULL, (LPCWSTR)fileName, L"File Copy", MB_OK);
+
+				saveEncrypted(hwnd, (LPWSTR)fileName);
+				break;
+			}
+
 		}
 			
-		case STN_CLICKED :
-		{
-			wchar_t fileName[100];
-			GetWindowTextW((HWND)lParam, (LPWSTR)fileName, 100);
-			//MessageBox(NULL, (LPCWSTR)fileName, L"File Copy", MB_OK);
-
-			saveEncrypted(hwnd, (LPWSTR)fileName);
-		}
+		
 		
 		break;
 		}

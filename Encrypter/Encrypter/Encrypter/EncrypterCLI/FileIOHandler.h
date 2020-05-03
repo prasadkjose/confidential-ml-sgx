@@ -14,6 +14,9 @@
 #include <strsafe.h>
 #include <filesystem>
 
+#define PLAINTEXT 1
+#define CIPHERTEXT 2
+#define BLOB 3
 
 void DisplayError(LPCTSTR lpszFunction);
 
@@ -26,3 +29,4 @@ VOID CALLBACK FileIOCompletionRoutine(
 void readFile(LPCTSTR, PBYTE, DWORD);
 void writeFile(LPCTSTR, PBYTE, DWORD);
 bool fileSize(LPCTSTR, DWORD*);
+bool generateFileName(LPSTR, LPSTR, int);
