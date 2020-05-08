@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\MasterThesis\Encrypter\Encrypter\Encrypter\EncrypterCLI;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Windows\System32;D:\MasterThesis\Encrypter\Encrypter\Encrypter\EncrypterCLI;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\MasterThesis\Encrypter\Encrypter\Encrypter\EncrypterCLI;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Windows\System32;D:\MasterThesis\Encrypter\Encrypter\Encrypter\EncrypterCLI;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -98,7 +98,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;cabinet.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>WindowsApp.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -116,7 +116,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;cabinet.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>WindowsApp.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Compress\Compress.cpp" />
     <ClCompile Include="DRNG.cpp" />
     <ClCompile Include="EncrypterCLI\EncrypterCLI.cpp" />
     <ClCompile Include="EncrypterCLI\FileIOHandler.cpp" />
@@ -177,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Compress\Compress.h" />
     <ClInclude Include="DRNG.h" />
     <ClInclude Include="EncrypterCLI\EncrypterCLI.h" />
     <ClInclude Include="EncrypterCLI\FileIOHandler.h" />
@@ -194,6 +196,7 @@
     <ClInclude Include="NNHelpers.h" />
     <ClInclude Include="PrintConsole.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

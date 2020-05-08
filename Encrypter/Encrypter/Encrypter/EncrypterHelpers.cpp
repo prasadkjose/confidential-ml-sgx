@@ -2,13 +2,14 @@
 #include "EncrypterCLI/EncrypterCLI.h"
 #include "EncrypterCLI/FileIOHandler.h"
 #include "DRNG.h"
+#pragma comment(lib, "cabinet.lib")
 
 
 //-------------------------------------------------------------------------------------------------------
 //Client Dashboard Helper functions
 
 HWND upldBtn;
-
+using namespace std;
 
 void addFileEncrypterUploadControls(HWND hwnd)
 {
@@ -70,42 +71,83 @@ void uploadFileEncrypterProc(HWND hwnd)
 					//Get the size of the file to be encrypted. 
 						if (fileSize(pszFilePath, &file_size))
 						{
+							//DEBUG: File size
 							/*char size[10];
 							sprintf_s(size, "%d", file_size);
 							MessageBoxA(NULL, (LPCSTR)size, "File Enrypter", MB_OK);*/
 
-							//To check Decrypt function
-							//encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/keyOut.txt"), TEXT("crypt/PT.txt"))
-							BYTE rgbAES128Key[] =
-							{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D','D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D','D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
-							//BYTE hash[32] = { 0 };
-							//encrypt.generateHash(rgbAES128Key, sizeof(rgbAES128Key), hash);
-
-							char in[] = "Prasad";
-							char out[100];
-
-							generateFileName(in, out , PLAINTEXT);
-							DRNG rand;
-
-							//Generate 12bit random salt
-							//rand.generate32bitRand((UINT32 *)rgbAES128Key, 16);
-													   							 						  
-							/*if (encrypt.generateAESKey(rgbAES128Key, TEXT("crypt/KeyBlobGenerated.txt")))
-								MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
-							else
-								MessageBox(NULL, L"Key Error", L"File Enrypter", MB_OK);*/
-							wchar_t c[100] = L"crypt/";
-							wcscat_s(c, 100, (LPCWSTR)out);
-
-							/*if (encrypt.encrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), c))
-								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
-							else
-								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);*/
 							
-							if (encrypt.decrypt(pszFilePath, file_size, TEXT("crypt/KeyBlobGenerated.txt"), TEXT("crypt/PTT1.txt")))
-								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+
+							//generate 32 bit Random File encryption key. 
+							BYTE rgbAES128Key[32] = {};
+							DRNG rand;
+							rand.generate32bitRand((UINT32 *)rgbAES128Key, 32);
+							
+							//generate File Name for encrypted file and key blob
+							wchar_t in[] = L"Prasad"; // temp Username or hash
+							BYTE hash[32] = { 0 };
+							encrypt.generateHash((PBYTE)in, 32, hash);
+
+							//Debug Statement for Hash
+							wchar_t UTFhash[100] = L"";
+							memcpy(UTFhash, hash, 32);
+							//writeFile(TEXT("crypt/a.txt"), (PBYTE)UTFhash, 32);
+
+							//Generate File Names
+							wchar_t pbCTout[100] =L"";							
+							generateFileName((LPWSTR)hash, pbCTout, CIPHERTEXT);							
+							wchar_t pbCTPath[100] = L"crypt/";
+							wcscat_s(pbCTPath, 100, pbCTout);
+							//writeFile(TEXT("crypt/b.txt"), (PBYTE)pbCTout, 32);
+
+							//strcat_s(pbCTPath, 100, pbCTout);
+							
+							
+							wchar_t pbBLOBout[100] = L"";
+							generateFileName((LPWSTR)hash, pbBLOBout, BLOB);							
+							wchar_t pbBLOBPath[100] = L".tmp/.filekeys/";
+							wcscat_s(pbBLOBPath, 100, pbBLOBout);
+							//wcscat_s(pbBLOBPath, 100, L".BLOB");
+
+							wchar_t pbPTTout[100] = L"";
+							generateFileName((LPWSTR)hash, pbPTTout, PLAINTEXT);
+							wchar_t pbPTTPath[100] = L"crypt/";
+							wcscat_s(pbPTTPath, 100, pbPTTout);
+							
+
+							//Generate AES Key and Save the blob 
+							/*char p[100] = "";
+							memcpy(p, (LPCTSTR)pbBLOBPath, 100);*/
+
+							//if (encrypt.generateAESKey(rgbAES128Key, pbBLOBPath))
+							//	MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
+							//else
+							//	MessageBox(NULL, L"Key Generation Error", L"File Enrypter", MB_OK); 
+
+							////Encrypt the file 
+							//
+							//if (encrypt.encrypt(pszFilePath, file_size, pbBLOBPath, pbCTPath))
+							//	MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+							//else
+							//	MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
+							
+							if (encrypt.decrypt(pszFilePath, file_size, pbBLOBPath, pbPTTPath))
+								MessageBoxA(NULL, (LPSTR)pbPTTPath, "File Enrypter", MB_OK);
 							else
-								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
+								MessageBoxA(NULL, "Decrypt Failure", "File Enrypter", MB_OK);
+
+
+							//TODO 2 : Encrypt File Key BLOB
+
+
+							/*if (remove((LPSTR)pbBLOBPath))
+								MessageBox(NULL, L"KeyBLOB Deleted", L"File Enrypter", MB_OK);
+							else
+								MessageBox(NULL, L"ERROR : Could not delete KeyBLOB", L"File Enrypter", MB_OK);*/
+
+							//TODO 4 : CAB Compression Encrypted File Key Blob and Encrypted File
+
+
 						}
 						else 
 							MessageBox(NULL, L"Get File Size Error", L"File Enrypter", MB_OK);

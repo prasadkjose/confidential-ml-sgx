@@ -494,6 +494,8 @@ Cleanup:
 	{
 		HeapFree(GetProcessHeap(), 0, pbIV);
 	}
+	return false;
+
 
 }
 
@@ -542,6 +544,7 @@ bool Crypto::decrypt(LPCTSTR CipherTextPath, DWORD cbCText, LPCTSTR KeyBlobPath,
 	// Allocate the buffer to Cipher Text the BLOB.
 	PBYTE rgbCrypto = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbCipherText);
 	readFile(CipherTextPath, rgbCrypto, cbCipherText);
+
 	//for (int i = 0; i <= cbCipherText ; i++)
 	//{
 	//	wprintf(L"\n byte: %d Data : %x\n", i, rgbCrypto[i]);
@@ -764,7 +767,7 @@ bool Crypto::decrypt(LPCTSTR CipherTextPath, DWORD cbCText, LPCTSTR KeyBlobPath,
 	}*/
 
 	wprintf(L"Success!\n");
-
+	return true;
 
 Cleanup:
 
@@ -798,7 +801,7 @@ Cleanup:
 		HeapFree(GetProcessHeap(), 0, pbIV);
 	}
 
-	return true;
+	return false;
 }
 
 bool Crypto::generateHash(PBYTE rgbMsg, DWORD cbMsg, PBYTE pbaHash)

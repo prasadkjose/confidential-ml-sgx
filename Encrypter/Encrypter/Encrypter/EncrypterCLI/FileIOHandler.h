@@ -29,4 +29,4 @@ VOID CALLBACK FileIOCompletionRoutine(
 void readFile(LPCTSTR, PBYTE, DWORD);
 void writeFile(LPCTSTR, PBYTE, DWORD);
 bool fileSize(LPCTSTR, DWORD*);
-bool generateFileName(LPSTR, LPSTR, int);
+bool generateFileName(LPWSTR, LPWSTR, int);

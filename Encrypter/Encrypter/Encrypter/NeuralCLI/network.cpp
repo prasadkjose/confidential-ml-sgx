@@ -144,8 +144,11 @@ int mainNN()
 {
   data_handler *dh = new data_handler();
 //#ifdef MNIST
+  //TODO Take File names as input
   dh->read_input_data("data/300-train");
+ // dh->read_input_data("data/400-train");
   dh->read_label_data("data/300-labels");
+  //dh->read_label_data("data/400-labels");
 //#else
   //dh->read_csv("/home/gerardta/iris.data", ",");
 //#endif

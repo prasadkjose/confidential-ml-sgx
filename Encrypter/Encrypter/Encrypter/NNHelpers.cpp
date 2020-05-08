@@ -1,9 +1,11 @@
-#include "NNHelpers.h"
+﻿#include "NNHelpers.h"
 #include "NeuralCLI/network.hpp"
+#include "EncrypterCLI/EncrypterCLI.h"
+
 #include "PrintConsole.h"
 #include <string> 
 
-//TODO : Comment all the new functions added today
+
 HWND trainUpldBtn;
 HWND trainBtn;
 
@@ -110,20 +112,22 @@ void uploadTrainFileProc(HWND hwnd)
 				if (SUCCEEDED(hr))
 				{
 					PWSTR pszFilePath;
+					PWSTR pszFileName;
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+					hr = pItem->GetDisplayName(SIGDN_NORMALDISPLAY, &pszFileName);
 
 					// Display the file name to the user.
 					if (SUCCEEDED(hr))
 					{
 						// concatenate the string with the Data directory path
-						wchar_t saveTo[100] = L"Data/";
-						wcscat_s(saveTo, 100, L"Train.txt");
+						wchar_t saveTo[100] = L".tmp/.encrypted/";
+						wcscat_s(saveTo, 100, pszFileName);
 
 
 						//	//Call ReadFile with the buffer initialized above.
 						//Copy the file to the Data Directory
 						if(copyFileToDest(pszFilePath, (LPCWSTR)saveTo))
-							MessageBox(NULL, pszFilePath, L"File Copy", MB_OK);
+							MessageBox(NULL, L"File Successfully Added", L"File Copy", MB_OK);
 						else
 							MessageBox(NULL, L"File Open Error", L"File Copy", MB_OK);
 
@@ -141,10 +145,69 @@ void uploadTrainFileProc(HWND hwnd)
 void trainBtnClick()
 {	
 	//-------------------------------------------------------------------------------------------------------
-		// This function is the event trigger for the train Model function.  
+		// This function is the event trigger to decrypt the datasets and the train Model function.  
 		// NO PARAMS
+	//-------------------------------------------------------------------------------------------------------
+	
+	//decrypt the datasets
+	Crypto decrypt;
 
-	if (mainNN())
+	//Take File names from directory - Same prefix file name for CT, BLOB and PT
+	WIN32_FIND_DATA FindFileData;
+	HANDLE hFind;
+	int y = 160;
+	hFind = FindFirstFile(L".tmp/.filekeys/*.BLOB", &FindFileData);
+	//MessageBoxW(NULL, FindFileData.cFileName, L"First File", MB_OK);
+
+	
+
+
+	if (hFind == INVALID_HANDLE_VALUE)
+	{
+		MessageBox(NULL, L"No file here", L"List Files", MB_OK);
+		
+		return;
+	}
+	else
+	{
+
+		while (FindNextFile(hFind, &FindFileData))
+		{
+			wchar_t * con;
+			wchar_t * pwcFileName = new wchar_t[100];
+			wchar_t CTname[100] = L"crypt/";
+			wchar_t BLOBname[100] = L".tmp/.filekeys/";
+			wchar_t PTname[100] = L"crypt/";
+			DWORD file_size = 10;
+
+
+			//MessageBox(NULL, FindFileData.cFileName, L"File Copy", MB_OK);
+			pwcFileName = wcstok_s(FindFileData.cFileName, L".", &con); //get the file name without extension(hash)
+			generateFileName(pwcFileName, CTname, CIPHERTEXT);
+			generateFileName(pwcFileName, BLOBname, BLOB);
+			generateFileName(pwcFileName, PTname, PLAINTEXT);
+
+			//Decrypt the file
+			/*fileSize(CTname, &file_size);
+			if (decrypt.decrypt(CTname, file_size, BLOBname, PTname))
+				MessageBoxA(NULL, "Decrypt Success", "File Enrypter", MB_OK);
+			else
+				MessageBoxA(NULL, "Decrypt Failure", "File Enrypter", MB_OK);*/
+
+			MessageBox(NULL, CTname, pwcFileName, MB_OK);
+
+		}
+
+		FindClose(hFind);
+
+
+	}
+
+	
+		
+	
+
+	/*if (mainNN())
 	{
 		MessageBox(NULL, L"Train Sucessful", L"Train", MB_OK);
 
@@ -153,7 +216,7 @@ void trainBtnClick()
 	{
 		MessageBox(NULL, L"Train Failed", L"Train", MB_OK);
 
-	}
+	}*/
 }
 
 HWND addConsoleControl(HWND hwnd)

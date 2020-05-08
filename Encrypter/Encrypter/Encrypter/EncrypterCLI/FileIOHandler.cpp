@@ -89,7 +89,7 @@ void readFile(LPCTSTR path, PBYTE ReadBuf, DWORD cbBuffer)
 	//	return;
 	//}
 
-	hFile = CreateFile(path,               // file to open
+	hFile = CreateFileW(path,               // file to open
 		GENERIC_READ,          // open for reading
 		FILE_SHARE_READ,       // share for reading
 		NULL,                  // default security
@@ -169,7 +169,7 @@ void writeFile(LPCTSTR path, PBYTE DataBuffer, DWORD cbBuffer)
 	//	return;
 	//}
 
-	hFile = CreateFile(path,                // name of the write
+	hFile = CreateFileW(path,                // name of the write
 		GENERIC_WRITE,          // open for writing
 		0,                      // do not share
 		NULL,                   // default security
@@ -220,6 +220,15 @@ void writeFile(LPCTSTR path, PBYTE DataBuffer, DWORD cbBuffer)
 
 bool fileSize(LPCTSTR path, DWORD* size)
 {
+
+	//-------------------------------------------------------------------------
+	// Function : Calculates the file size in Bytes. 
+	// @PARAMS LPCTSTR pointer to File name.
+	// @PARAMS DWORD size of the File.
+	// Returns true if success.
+	//-------------------------------------------------------------------------
+
+
 	if (fs::file_size(path))
 	{
 		*size = fs::file_size(path);
@@ -235,47 +244,50 @@ bool fileSize(LPCTSTR path, DWORD* size)
 
 }
 
-bool generateFileName(LPSTR pbInput, LPSTR pbfileName, int flag) {
+bool generateFileName(LPWSTR pbInput, LPWSTR pbfileName, int flag) {
+	//-------------------------------------------------------------------------
+	// Function : Generates a File name for Crypto functions. 
+	// @PARAMS LPSTR pbInput pointer user Identifier - username+ password? 
+	// @PARAMS int File types.
+	// Returns true if success.
+	//-------------------------------------------------------------------------
 
-	Crypto hash;
-	PBYTE hashOut = (PBYTE)HeapAlloc(GetProcessHeap(), 0, 32);
-	hash.generateHash((PBYTE)pbInput, sizeof(pbInput), hashOut);
-	//PBYTE a = (PBYTE)HeapAlloc(GetProcessHeap(), 0, 100);
-	//memcpy(a, hashOut, 32);
-
+	wchar_t pbIn[32] = L"";
+	memcpy(pbIn, pbInput, 32);
 
 	switch (flag)
 	{
 		 
 	case PLAINTEXT:
 	{
-		char a[] = ".PT" ;
-		memcpy(hashOut+32, a, sizeof(a));
-		/*sprintf_s(format, 10, "%s", ".PT");
-		strcat_s(a, 50, format);*/
+		wchar_t a[10] = L".PT" ;
+		wcscat_s(pbfileName, 100, pbIn);
+		wcscat_s(pbfileName, 100, a);
 		break;
 	}
 	case CIPHERTEXT:
 	{
-		char a[] = ".CT";
-		memcpy(hashOut + 32, a, sizeof(a));
+		wchar_t a[10] = L".CT";
+		wcscat_s(pbfileName, 100, pbIn);
+		wcscat_s(pbfileName, 100, a);
 		break;
 
 	}
 	case BLOB:
 	{
-		char a[] = ".BLOB";
-		memcpy(hashOut + 32, a, sizeof(a));
+		wchar_t a[10] = L".BLOB";		
+		wcscat_s(pbfileName, 100, pbIn);
+		wcscat_s(pbfileName, 100, a);
 		break;
 
 	}
 	}
 
-	memcpy(pbfileName, hashOut, 100);
+	//memcpy(pbfileName, hashOut, 100);
 
 
 	
-	HeapFree(GetProcessHeap(), 0, hashOut);
+//	HeapFree(GetProcessHeap(), 0, hashOut);
 
 	return true;
 }
