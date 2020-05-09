@@ -9,7 +9,6 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #include <stdio.h>
 #include "MainHelpers.h"
 
-//URGENT: Test with multiple hashes and users- encrypt and Decrypt
 
 #define IDS_FIRSTCOLUMN 0
 LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

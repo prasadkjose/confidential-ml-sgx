@@ -59,7 +59,9 @@ void uploadFileEncrypterProc(HWND hwnd)
 				if (SUCCEEDED(hr))
 				{
 					PWSTR pszFilePath;
+					PWSTR pszDirPath;
 					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
 
 					// Display the file name to the user.
 					if (SUCCEEDED(hr))
@@ -71,12 +73,6 @@ void uploadFileEncrypterProc(HWND hwnd)
 					//Get the size of the file to be encrypted. 
 						if (fileSize(pszFilePath, &file_size))
 						{
-							//DEBUG: File size
-							/*char size[10];
-							sprintf_s(size, "%d", file_size);
-							MessageBoxA(NULL, (LPCSTR)size, "File Enrypter", MB_OK);*/
-
-							
 
 							//generate 32 bit Random File encryption key. 
 							BYTE rgbAES128Key[32] = {};
@@ -84,7 +80,7 @@ void uploadFileEncrypterProc(HWND hwnd)
 							rand.generate32bitRand((UINT32 *)rgbAES128Key, 32);
 							
 							//generate File Name for encrypted file and key blob
-							wchar_t in[] = L"Prasad"; // temp Username or hash
+							wchar_t in[] = L"Jane Doe"; // temp Username or hash
 							BYTE hash[32] = { 0 };
 							encrypt.generateHash((PBYTE)in, 32, hash);
 
@@ -100,7 +96,6 @@ void uploadFileEncrypterProc(HWND hwnd)
 							wcscat_s(pbCTPath, 100, pbCTout);
 							//writeFile(TEXT("crypt/b.txt"), (PBYTE)pbCTout, 32);
 
-							//strcat_s(pbCTPath, 100, pbCTout);
 							
 							
 							wchar_t pbBLOBout[100] = L"";
@@ -109,37 +104,42 @@ void uploadFileEncrypterProc(HWND hwnd)
 							wcscat_s(pbBLOBPath, 100, pbBLOBout);
 							//wcscat_s(pbBLOBPath, 100, L".BLOB");
 
-							wchar_t pbPTTout[100] = L"";
-							generateFileName((LPWSTR)hash, pbPTTout, PLAINTEXT);
-							wchar_t pbPTTPath[100] = L"crypt/";
-							wcscat_s(pbPTTPath, 100, pbPTTout);
+							
+							//TODO: Get directory path of pszFilePath to save the encrypted file
 							
 
 							//Generate AES Key and Save the blob 
-							/*char p[100] = "";
-							memcpy(p, (LPCTSTR)pbBLOBPath, 100);*/
+							char p[100] = "";
+							memcpy(p, (LPCTSTR)pbBLOBPath, 100);
 
-							//if (encrypt.generateAESKey(rgbAES128Key, pbBLOBPath))
-							//	MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
-							//else
-							//	MessageBox(NULL, L"Key Generation Error", L"File Enrypter", MB_OK); 
+							if (encrypt.generateAESKey(rgbAES128Key, pbBLOBPath))
+								MessageBox(NULL, L"Key Generrated", L"File Enrypter", MB_OK);
+							else
+								MessageBox(NULL, L"Key Generation Error", L"File Enrypter", MB_OK); 
 
-							////Encrypt the file 
-							//
-							//if (encrypt.encrypt(pszFilePath, file_size, pbBLOBPath, pbCTPath))
-							//	MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
-							//else
-							//	MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
+							//Encrypt the file 
 							
+							if (encrypt.encrypt(pszFilePath, file_size, pbBLOBPath, pbCTPath))
+								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
+							else
+								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
+							
+
+							/*wchar_t pbPTTout[100] = L"";
+							generateFileName((LPWSTR)hash, pbPTTout, PLAINTEXT);
+							wchar_t pbPTTPath[100] = L"crypt/";
+							wcscat_s(pbPTTPath, 100, pbPTTout);
+
 							if (encrypt.decrypt(pszFilePath, file_size, pbBLOBPath, pbPTTPath))
 								MessageBoxA(NULL, (LPSTR)pbPTTPath, "File Enrypter", MB_OK);
 							else
-								MessageBoxA(NULL, "Decrypt Failure", "File Enrypter", MB_OK);
+								MessageBoxA(NULL, "Decrypt Failure", "File Enrypter", MB_OK);*/
 
 
 							//TODO 2 : Encrypt File Key BLOB
 
 
+							//Delete the File Key Blob
 							/*if (remove((LPSTR)pbBLOBPath))
 								MessageBox(NULL, L"KeyBLOB Deleted", L"File Enrypter", MB_OK);
 							else
@@ -153,12 +153,7 @@ void uploadFileEncrypterProc(HWND hwnd)
 							MessageBox(NULL, L"Get File Size Error", L"File Enrypter", MB_OK);
 
 
-						//	//Call ReadFile with the buffer initialized above.
-						//Copy the file to the Data Directory
-						/*if(copyFileToDest(pszFilePath, (LPCWSTR)saveTo))
-							MessageBox(NULL, pszFilePath, L"File Copy", MB_OK);
-						else
-							MessageBox(NULL, L"File Open Error", L"File Copy", MB_OK);*/
+						//	//Call ReadFile with the buffer initialized above
 
 						CoTaskMemFree(pszFilePath);
 					}

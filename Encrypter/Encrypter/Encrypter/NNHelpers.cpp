@@ -175,9 +175,9 @@ void trainBtnClick()
 		{
 			wchar_t * con;
 			wchar_t * pwcFileName = new wchar_t[100];
-			wchar_t CTname[100] = L"crypt/";
+			wchar_t CTname[100] = L".tmp/.encrypted/";
 			wchar_t BLOBname[100] = L".tmp/.filekeys/";
-			wchar_t PTname[100] = L"crypt/";
+			wchar_t PTname[100] = L".tmp/.decrypted/";
 			DWORD file_size = 10;
 
 
@@ -188,13 +188,12 @@ void trainBtnClick()
 			generateFileName(pwcFileName, PTname, PLAINTEXT);
 
 			//Decrypt the file
-			/*fileSize(CTname, &file_size);
+			fileSize(CTname, &file_size); // get file size
 			if (decrypt.decrypt(CTname, file_size, BLOBname, PTname))
-				MessageBoxA(NULL, "Decrypt Success", "File Enrypter", MB_OK);
+				MessageBox(NULL, pwcFileName, L"Decrypt Success",  MB_OK);
 			else
-				MessageBoxA(NULL, "Decrypt Failure", "File Enrypter", MB_OK);*/
+				MessageBoxA(NULL, "Decrypt Failure", "File Enrypter", MB_OK);
 
-			MessageBox(NULL, CTname, pwcFileName, MB_OK);
 
 		}
 
