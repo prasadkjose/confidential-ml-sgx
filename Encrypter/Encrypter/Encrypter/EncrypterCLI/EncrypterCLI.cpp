@@ -3,6 +3,7 @@
 
 #include "EncrypterCLI.h"
 
+
 //const BYTE rgbPlaintext;
 //{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
 

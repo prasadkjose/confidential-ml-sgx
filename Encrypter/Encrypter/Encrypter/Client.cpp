@@ -79,6 +79,7 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 	PAINTSTRUCT ps;
 	HDC hdc;
+	static HBRUSH hbrListBackground;
 	switch (uMsg)
 	{
 	case WM_DESTROY:
@@ -93,7 +94,7 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		
 		addFileEncrypterUploadControls(hwnd);
 		listEncryptedFilesDir(hwnd);
-		
+		hbrListBackground = CreateSolidBrush(RGB(31, 117, 97));
 
 
 	}
@@ -108,6 +109,28 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 		return 0;
 	
+	case WM_CTLCOLORSTATIC:
+	{
+		//---------------------------------Color Schemes------------------------------------------------------
+		DWORD CtrlID = GetDlgCtrlID((HWND)lParam); //Window Control ID
+		if (CtrlID == SAVE_ENCRYPTED) //If desired control
+		{
+			HDC hdcStatic = (HDC)wParam;
+			SetTextColor(hdcStatic, RGB(255, 255, 255));
+			SetBkMode(hdcStatic, TRANSPARENT);
+			return (LONG)hbrListBackground;
+		}
+		else if (CtrlID == NO_BG_COLOR)
+		{
+			HDC hdcStatic = (HDC)wParam;
+			SetBkMode(hdcStatic, TRANSPARENT);
+			SetTextColor(hdcStatic, RGB(255, 255, 255));
+			return (LRESULT)GetStockObject(HOLLOW_BRUSH);
+		}
+
+		 
+	}
+
 	case WM_COMMAND:
 		// This command is passed if any button/menu is clicked. 
 		switch (wParam)
@@ -115,7 +138,6 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		case OPEN_ENCRYPT_FILE_BUTTON:
 		{
 			uploadFileEncrypterProc(hwnd);
-			listEncryptedFilesDir(hwnd);
 			break;
 		}
 		case SAVE_ENCRYPTED:
@@ -131,7 +153,6 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 			}
 
 		}
-			
 		
 		
 		break;

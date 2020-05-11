@@ -93,6 +93,9 @@
     <ClCompile Include="Compress\Compress.cpp">
       <Filter>Source Files\compress</Filter>
     </ClCompile>
+    <ClCompile Include="user.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainHelpers.h">

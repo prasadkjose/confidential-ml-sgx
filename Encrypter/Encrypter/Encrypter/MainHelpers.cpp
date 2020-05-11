@@ -51,7 +51,7 @@ void drawRect(HWND hwnd, HDC hdc)
 	DeleteObject(brush);
 
 	rect = { 0, 0, (width/2)-50,height };
-	brush = CreateSolidBrush(RGB(50, 151, 151));
+	brush = CreateSolidBrush(RGB(58, 179, 151));
 	FillRect(hdc, &rect, brush);
 	DeleteObject(brush);
 
