@@ -8,9 +8,11 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #include <windows.h>
 #include <stdio.h>
 #include "MainHelpers.h"
+#include <gdiplus.h>
+#include "Enclave.h"
 
+using namespace Gdiplus;
 
-#define IDS_FIRSTCOLUMN 0
 LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HINSTANCE   g_hInst;
 
@@ -79,9 +81,11 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 	PAINTSTRUCT ps;
 	HDC hdc;
-	static HBRUSH hbrListBackground;
+	static HBRUSH hbrGreen, hbrDrkGreen;
+	HDC hdcMem;
 	switch (uMsg)
 	{
+
 	case WM_DESTROY:
 		//Quit the App when close button is clicked. 
 
@@ -91,15 +95,18 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 	case WM_CREATE:
 	{
+		loadMainApp(hwnd);
 		
-		addFileEncrypterUploadControls(hwnd);
-		listEncryptedFilesDir(hwnd);
-		hbrListBackground = CreateSolidBrush(RGB(31, 117, 97));
-
+		//testEnclave();
+		hbrGreen = CreateSolidBrush(RGB(58, 179, 151));
+		hbrDrkGreen = CreateSolidBrush(RGB(31, 117, 97));
+		
 
 	}
 	case WM_PAINT:
+
 		hdc = BeginPaint(hwnd, &ps);
+		
 		drawRect(hwnd, hdc);
 
 		//TextOut(hdc, 0, 0, L"Hello", 15);
@@ -118,26 +125,33 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 			HDC hdcStatic = (HDC)wParam;
 			SetTextColor(hdcStatic, RGB(255, 255, 255));
 			SetBkMode(hdcStatic, TRANSPARENT);
-			return (LONG)hbrListBackground;
+			return (LONG)hbrDrkGreen;
 		}
-		else if (CtrlID == NO_BG_COLOR)
+		if (CtrlID == NO_BG_WHITE_TXT)
 		{
-			HDC hdcStatic = (HDC)wParam;
-			SetBkMode(hdcStatic, TRANSPARENT);
-			SetTextColor(hdcStatic, RGB(255, 255, 255));
-			return (LRESULT)GetStockObject(HOLLOW_BRUSH);
+			HDC hdcStatica = (HDC)wParam;
+			SetTextColor(hdcStatica, RGB(255, 255, 255));
+			SetBkMode(hdcStatica, TRANSPARENT);
+			return (LONG)hbrGreen;
 		}
+
+		
+		
+		return (LRESULT)GetStockObject(HOLLOW_BRUSH);
 
 		 
 	}
 
 	case WM_COMMAND:
 		// This command is passed if any button/menu is clicked. 
+		wchar_t uhash[300] = L"";
+		DWORD cbUhash = 0;
 		switch (wParam)
 		{
+			
 		case OPEN_ENCRYPT_FILE_BUTTON:
 		{
-			uploadFileEncrypterProc(hwnd);
+			uploadFileEncrypterProc(hwnd, uhash, cbUhash);
 			break;
 		}
 		case SAVE_ENCRYPTED:
@@ -151,9 +165,20 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 				saveEncrypted(hwnd, (LPWSTR)fileName);
 				break;
 			}
-
 		}
-		
+		case LOGIN_NEXT :
+			//Authenticate User
+			
+			if (authenticateWinCred(5, uhash, cbUhash))
+			{
+				//Remove the LoginControls
+				removeLoginContols(hwnd);
+				//Add ClientArea controls
+				addFileEncrypterUploadControls(hwnd);
+				listEncryptedFilesDir(hwnd);
+
+			}
+			break;
 		
 		break;
 		}

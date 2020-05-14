@@ -8,7 +8,7 @@
 #define NO_BG_COLOR 102
 
 //Client Encrypter Dashboard Helper functions
-void uploadFileEncrypterProc(HWND);
+void uploadFileEncrypterProc(HWND, LPWSTR, DWORD);
 void addFileEncrypterUploadControls(HWND);
 void listEncryptedFilesDir(HWND);
 bool saveEncrypted(HWND, LPWSTR);

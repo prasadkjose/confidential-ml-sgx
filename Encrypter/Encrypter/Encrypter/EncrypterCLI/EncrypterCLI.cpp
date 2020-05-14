@@ -375,6 +375,13 @@ bool Crypto::encrypt(LPCTSTR PlaintextPath, DWORD cbPText, LPCTSTR KeyBlobPath, 
 	}
 
 	memcpy(pbPlainText, rgbPlaintext, cbPText);
+	BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO authinfo;
+
+	/*BCRYPT_INIT_AUTH_MODE_INFO(authinfo);
+	authinfo.pbNonce = &nonce[0];
+	authinfo.cbNonce = nonce_len;
+	authinfo.pbTag = &tag[0];
+	authinfo.cbTag = tag_len;*/
 
 	//
 	// Get the output buffer size.
@@ -643,8 +650,8 @@ bool Crypto::decrypt(LPCTSTR CipherTextPath, DWORD cbCText, LPCTSTR KeyBlobPath,
 	if (!NT_SUCCESS(status = BCryptSetProperty(
 		hAesAlg,
 		BCRYPT_CHAINING_MODE,
-		(PBYTE)BCRYPT_CHAIN_MODE_CBC,
-		sizeof(BCRYPT_CHAIN_MODE_CBC),
+		(PBYTE)BCRYPT_CHAIN_MODE_GCM,
+		sizeof(BCRYPT_CHAIN_MODE_GCM),
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptSetProperty\n", status);

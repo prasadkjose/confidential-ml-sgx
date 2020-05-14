@@ -131,16 +131,10 @@
 //			break;
 //		case TRAIN_BUTTON : 
 //			trainBtnClick();
+//			//URGENT: Delete method to delete decrypted files
 //
 //		}
 //		break;
-//	/*case WM_CTLCOLORSTATIC:
-//		switch (wParam) {
-//			case TITLE:
-//				HDC hdcStatic = (HDC)wParam;
-//				SetTextColor(hdcStatic, RGB(255, 0, 0));
-//				break;
-//		}*/
 //	
 //
 //		

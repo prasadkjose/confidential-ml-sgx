@@ -5,6 +5,8 @@
 
 #define LOGIN_NEXT 1
 #define TITLE 2
+#define NO_BG_WHITE_TXT 3
+#define NO_BG_BLACK_TXT 4
 
 
 void AddControls(HWND);

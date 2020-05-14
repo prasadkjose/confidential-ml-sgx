@@ -1,9 +1,10 @@
 #include "EncrypterHelpers.h"
+#include "MainHelpers.h"
 #include "EncrypterCLI/EncrypterCLI.h"
 #include "EncrypterCLI/FileIOHandler.h"
 #include "DRNG.h"
 #include <Lmcons.h>
-#include<windows.h>
+#include <windows.h>
 #include <wincred.h>	
 
 
@@ -11,7 +12,7 @@
 //-------------------------------------------------------------------------------------------------------
 //Client Dashboard Helper functions
 
-HWND upldBtn;
+HWND upldBtn, hwndEncTitle;
 using namespace std;
 
 void addFileEncrypterUploadControls(HWND hwnd)
@@ -20,23 +21,20 @@ void addFileEncrypterUploadControls(HWND hwnd)
 	// This function creates encrypter Upload controls and other UI elements
 	// @PARAM HWND window handler of  the Main app
 
-	CreateWindowW(L"static", L"Encrypted Files", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 148, 150, 205, 40, hwnd,(HMENU)NO_BG_COLOR, NULL, NULL);
+	hwndEncTitle = CreateWindowW(L"static", L"Encrypted Files", WS_VISIBLE | WS_CHILD | SS_CENTER | SS_CENTERIMAGE, 148, 150, 205, 40, hwnd,(HMENU)NO_BG_WHITE_TXT, NULL, NULL);
 	upldBtn = CreateWindowW(L"Button", L"Upload", WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON, 751, 381, 133, 36, hwnd, (HMENU)OPEN_ENCRYPT_FILE_BUTTON, NULL, NULL);
-
+	HFONT hFont = CreateFont(32, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
+	SendMessage(hwndEncTitle, WM_SETFONT, WPARAM(hFont), TRUE);
 
 }
 
-void uploadFileEncrypterProc(HWND hwnd)
+void uploadFileEncrypterProc(HWND hwnd, LPWSTR uhash, DWORD cbUhash)
 {
 	//-------------------------------------------------------------------------------------------------------
 	// This function take a file and Encrypts it to the crypto directory along with the KeyBlob
 	// @PARAM HWND window handler of  the Main app
-
-	wchar_t uhash[300] = L"";
-	DWORD cbUhash = 0;
-	authenticateWinCred(5, uhash, cbUhash);
-	//MessageBoxW(NULL, uhash, L"Display Pass", MB_OK);
-
+	// @PARAM LPWSTR uhash - Userhash after authentication
+	// @PARAM DWORD cbUhash - size of uhash
 	
 
 	OPENFILENAME ofn;
@@ -134,10 +132,10 @@ void uploadFileEncrypterProc(HWND hwnd)
 
 							//Encrypt the file 
 							
-							/*if (encrypt.encrypt(pszFilePath, file_size, pbBLOBPath, pbCTPath))
+							if (encrypt.encrypt(pszFilePath, file_size, pbBLOBPath, pbCTPath))
 								MessageBox(NULL, pszFilePath, L"File Enrypter", MB_OK);
 							else
-								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);*/
+								MessageBox(NULL, L"Encryption Error", L"File Enrypter", MB_OK);
 							
 
 							/*wchar_t pbPTTout[100] = L"";
@@ -202,11 +200,11 @@ void listEncryptedFilesDir(HWND hwnd)
 	}
 	else
 	{
-
+		FindNextFile(hFind, &FindFileData);
 		while (FindNextFile(hFind, &FindFileData))
 		{
 			//MessageBox(NULL, FindFileData.cFileName, L"File Copy", MB_OK);
-			CreateWindowW(L"Static", FindFileData.cFileName, WS_VISIBLE | WS_CHILD | SS_CENTER | SS_NOTIFY | SS_CENTERIMAGE, 126, y, 250, 30, hwnd, (HMENU)SAVE_ENCRYPTED, NULL, NULL);
+			CreateWindowW(L"Static", FindFileData.cFileName, WS_VISIBLE | WS_CHILD | SS_CENTER | SS_NOTIFY | SS_CENTERIMAGE, 126, y, 270, 30, hwnd, (HMENU)SAVE_ENCRYPTED, NULL, NULL);
 			y = y + 40;
 
 		}

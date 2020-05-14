@@ -31,6 +31,9 @@
     <Filter Include="Source Files\compress">
       <UniqueIdentifier>{66792ad0-7f0d-4bc7-aab1-2a5b88284eaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{d751971d-68a8-438e-a2ca-21d44631d39d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -96,6 +99,15 @@
     <ClCompile Include="user.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CryptoEnclave_u.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enclave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainHelpers.h">
@@ -158,5 +170,16 @@
     <ClInclude Include="Compress\Compress.h">
       <Filter>Header Files\compress</Filter>
     </ClInclude>
+    <ClInclude Include="CryptoEnclave_u.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enclave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\CryptoEnclave\CryptoEnclave\CryptoEnclave.edl">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
