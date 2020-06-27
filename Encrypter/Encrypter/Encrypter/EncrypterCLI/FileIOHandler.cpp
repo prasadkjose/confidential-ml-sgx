@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <strsafe.h>
 #include "FileIOHandler.h"
-#include "../PrintConsole.h"
+//#include "../PrintConsole.h"
 #include "EncrypterCLI.h"
 
 namespace fs = std::filesystem;
@@ -253,7 +253,12 @@ bool generateFileName(LPWSTR pbInput, LPWSTR pbfileName, int flag) {
 	//-------------------------------------------------------------------------
 
 	wchar_t pbIn[32] = L"";
-	memcpy(pbIn, pbInput, 32);
+	wchar_t randSession[sizeof(wchar_t)*16] = L"";
+	memcpy(pbIn, pbInput+8, 32);
+	/*DRNG randomSession;
+	randomSession.generate32bitRand((UINT32 *)randSession,16);
+	wcscat_s(pbfileName, 100, randSession);*/
+	wcscat_s(pbfileName, 100, pbIn);
 
 	switch (flag)
 	{
@@ -261,14 +266,12 @@ bool generateFileName(LPWSTR pbInput, LPWSTR pbfileName, int flag) {
 	case PLAINTEXT:
 	{
 		wchar_t a[10] = L".PT" ;
-		wcscat_s(pbfileName, 100, pbIn);
 		wcscat_s(pbfileName, 100, a);
 		break;
 	}
 	case CIPHERTEXT:
 	{
 		wchar_t a[10] = L".CT";
-		wcscat_s(pbfileName, 100, pbIn);
 		wcscat_s(pbfileName, 100, a);
 		break;
 
@@ -276,7 +279,6 @@ bool generateFileName(LPWSTR pbInput, LPWSTR pbfileName, int flag) {
 	case BLOB:
 	{
 		wchar_t a[10] = L".BLOB";		
-		wcscat_s(pbfileName, 100, pbIn);
 		wcscat_s(pbfileName, 100, a);
 		break;
 

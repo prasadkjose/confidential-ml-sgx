@@ -1,0 +1,18 @@
+ Volume in drive D has no label.
+ Volume Serial Number is 020D-84A5
+
+ Directory of D:\MasterThesis\Encrypter\SGX_ML\x64\Simulation
+
+02/06/2020  16:12    <DIR>          .
+02/06/2020  16:12    <DIR>          ..
+02/06/2020  16:12               784 a.txt
+02/06/2020  15:06           241,664 CryptoEnclave.dll
+02/06/2020  15:06             1,177 CryptoEnclave.exp
+02/06/2020  15:06             2,418 CryptoEnclave.lib
+02/06/2020  15:06         1,150,976 CryptoEnclave.pdb
+02/06/2020  15:06           241,664 CryptoEnclave.signed.dll
+02/06/2020  16:14           792,576 SGX_ML.exe
+02/06/2020  16:14         3,310,872 SGX_ML.ilk
+02/06/2020  16:14         3,043,328 SGX_ML.pdb
+               9 File(s)      8,785,459 bytes
+               2 Dir(s)   6,773,170,176 bytes free

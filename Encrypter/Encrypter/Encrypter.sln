@@ -19,8 +19,8 @@ Global
 		Simulation|x86 = Simulation|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Debug|x64.ActiveCfg = Debug|x64
-		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Debug|x64.Build.0 = Debug|x64
+		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Debug|x64.ActiveCfg = Debug|Win32
+		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Debug|x64.Build.0 = Debug|Win32
 		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Debug|x86.ActiveCfg = Debug|Win32
 		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Debug|x86.Build.0 = Debug|Win32
 		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Prerelease|x64.ActiveCfg = Prerelease|x64
@@ -31,8 +31,8 @@ Global
 		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Release|x64.Build.0 = Release|x64
 		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Release|x86.ActiveCfg = Release|Win32
 		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Release|x86.Build.0 = Release|Win32
-		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Simulation|x64.ActiveCfg = Simulation|x64
-		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Simulation|x64.Build.0 = Simulation|x64
+		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Simulation|x64.ActiveCfg = Simulation|Win32
+		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Simulation|x64.Build.0 = Simulation|Win32
 		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Simulation|x86.ActiveCfg = Simulation|Win32
 		{EBE8FC0F-4289-4F59-B845-44972F3F0C3C}.Simulation|x86.Build.0 = Simulation|Win32
 		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Debug|x64.ActiveCfg = Debug|x64
@@ -47,8 +47,8 @@ Global
 		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Release|x64.Build.0 = Release|x64
 		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Release|x86.ActiveCfg = Release|Win32
 		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Release|x86.Build.0 = Release|Win32
-		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Simulation|x64.ActiveCfg = Simulation|x64
-		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Simulation|x64.Build.0 = Simulation|x64
+		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Simulation|x64.ActiveCfg = Simulation|Win32
+		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Simulation|x64.Build.0 = Simulation|Win32
 		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Simulation|x86.ActiveCfg = Simulation|Win32
 		{F19C142D-11FF-4FE0-900B-BA307BD6D03B}.Simulation|x86.Build.0 = Simulation|Win32
 	EndGlobalSection

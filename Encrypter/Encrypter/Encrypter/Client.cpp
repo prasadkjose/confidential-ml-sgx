@@ -10,12 +10,13 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 #include "MainHelpers.h"
 #include <gdiplus.h>
 #include "Enclave.h"
+#include "PrintConsole.h"
 
 using namespace Gdiplus;
 
 LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HINSTANCE   g_hInst;
-
+HWND consoleControl;	//Window Handler for the console window
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
 	//@PARAMS HINSTANCE hInstance - Instance of the Application.
@@ -23,7 +24,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	//@PARAMS PWSTR pCmdLine- Args passed from the command line. 
 
 	//1. Register the window class.
-	const wchar_t CLASS_NAME[] = L"Dashboard";
+	const wchar_t CLASS_NAME[] = L"EncrypterApplication";
 
 	WNDCLASS wc = { };
 
@@ -39,7 +40,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	HWND hwndClient = CreateWindowEx(
 		0,                              // Optional window styles.
 		CLASS_NAME,                     // Window class
-		L"Dashboard.",    // Window text
+		L"Encrypter Application",    // Window text
 		WS_OVERLAPPEDWINDOW,            // Window style
 
 		// Size and position
@@ -81,7 +82,7 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 	PAINTSTRUCT ps;
 	HDC hdc;
-	static HBRUSH hbrGreen, hbrDrkGreen;
+	static HBRUSH hbrGreen, hbrDrkGreen, bhrWhite;
 	HDC hdcMem;
 	switch (uMsg)
 	{
@@ -95,12 +96,16 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 	case WM_CREATE:
 	{
-		loadMainApp(hwnd);
-		
+		//
 		//testEnclave();
+
+		
+		loadMainApp(hwnd);
 		hbrGreen = CreateSolidBrush(RGB(58, 179, 151));
 		hbrDrkGreen = CreateSolidBrush(RGB(31, 117, 97));
-		
+		bhrWhite = CreateSolidBrush(RGB(255, 255, 255));
+
+		break;
 
 	}
 	case WM_PAINT:
@@ -134,6 +139,13 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 			SetBkMode(hdcStatica, TRANSPARENT);
 			return (LONG)hbrGreen;
 		}
+		if (CtrlID == WHITE_BG_GREEN_TXT)
+		{
+			HDC hdcStatica = (HDC)wParam;
+			SetTextColor(hdcStatica, RGB(31, 117, 97));
+			SetBkMode(hdcStatica, TRANSPARENT);
+			return (LONG)bhrWhite;
+		}
 
 		
 		
@@ -144,14 +156,16 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 	case WM_COMMAND:
 		// This command is passed if any button/menu is clicked. 
-		wchar_t uhash[300] = L"";
-		DWORD cbUhash = 0;
+		wchar_t uhash[300] = L"abc";
+		DWORD cbUhash = 4;
 		switch (wParam)
 		{
 			
 		case OPEN_ENCRYPT_FILE_BUTTON:
 		{
 			uploadFileEncrypterProc(hwnd, uhash, cbUhash);
+			listEncryptedFilesDir(hwnd);
+
 			break;
 		}
 		case SAVE_ENCRYPTED:
@@ -169,13 +183,17 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		case LOGIN_NEXT :
 			//Authenticate User
 			
-			if (authenticateWinCred(5, uhash, cbUhash))
+			//if (authenticateWinCred(5, uhash, cbUhash))
+			if(1)
 			{
 				//Remove the LoginControls
 				removeLoginContols(hwnd);
 				//Add ClientArea controls
 				addFileEncrypterUploadControls(hwnd);
+				consoleControl = addConsoleControl(hwnd);
 				listEncryptedFilesDir(hwnd);
+				__printf((LPWSTR)L"User Authentication - OK.");
+
 
 			}
 			break;

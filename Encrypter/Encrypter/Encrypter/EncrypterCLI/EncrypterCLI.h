@@ -10,7 +10,11 @@
 //----------------------------------------------------------
 #include <bcrypt.h> 
 #include "FileIOHandler.h"
+#include "../DRNG.h"
 #include <stdio.h>
+#include <vector>
+#include "../PrintConsole.h"
+
 #define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
 
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
@@ -23,9 +27,9 @@ class Crypto {
 public:
 	Crypto();
 	//~Crypto();
-
-	bool generateAESKey(PBYTE, LPCTSTR);
-	bool encrypt(LPCTSTR, DWORD, LPCTSTR, LPCTSTR);
+	DRNG drng;
+	bool generateAESKey(PBYTE, LPCTSTR, PBYTE);
+	bool encrypt(LPCTSTR, DWORD, PBYTE, LPCTSTR);
 	bool decrypt(LPCTSTR, DWORD, LPCTSTR, LPCTSTR);
 	bool generateHash(PBYTE, DWORD, PBYTE);
 };

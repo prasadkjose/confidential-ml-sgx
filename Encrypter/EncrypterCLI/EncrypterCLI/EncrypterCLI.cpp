@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <bcrypt.h>
 #include "EncrypterCLI.h"
+#include <assert.h>
+#include <vector>
 #define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
 
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
@@ -46,6 +48,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		cbData = 0,
 		cbKeyObject = 0,
 		cbBlockLen = 0,
+		cbIV = 12,
 		cbBlob = 0;
 	//Buffers
 	PBYTE                   pbCipherText = NULL,
@@ -53,6 +56,24 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		pbKeyObject = NULL,
 		pbIV = NULL,
 		pbBlob = NULL;
+
+	NTSTATUS bcryptResult = 0;
+	// To be clear, we're using an IV and a GCM nonce that are all
+	// zeroes. This is only for testing. In a real application,
+	// you MUST ensure the GCM nonce is never repeated. If you fail
+	// to do so, your implementation will be inherently insecure.
+
+	// Create an IV that is the same size as Botan's:
+	const size_t AES_IV_SIZE = 12;
+	const std::vector<BYTE> origIV = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+
+	// This must always be 96 bits (12 bytes):
+	const size_t GCM_NONCE_SIZE = 12;
+	const std::vector<BYTE> origNonce = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+
+		// We are going to do in-place encryption:
+
+	
 
 
 	// Open an algorithm handle.
@@ -63,7 +84,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	// Calculate the size of the buffer to hold the KeyObject.
@@ -76,7 +97,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	// Allocate the key object on the heap.
@@ -84,7 +105,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 	if (NULL == pbKeyObject)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	// Calculate the block length for the IV.
@@ -97,36 +118,36 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
-	// Determine whether the cbBlockLen is not longer than the IV length.
-	if (cbBlockLen > sizeof(rgbIV))
-	{
-		wprintf(L"**** block length is longer than the provided IV length\n");
-		goto Cleanup;
-	}
+	//// Determine whether the cbBlockLen is not longer than the IV length.
+	//if (cbBlockLen > sizeof(rgbIV))
+	//{
+	//	wprintf(L"**** block length is longer than the provided IV length\n");
+	//	goto Cleanup;
+	//}
 
 	// Allocate a buffer for the IV. The buffer is consumed during the 
 	// encrypt/decrypt process.
-	pbIV = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlockLen);
+	pbIV = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbIV);
 	if (NULL == pbIV)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
-	memcpy(pbIV, rgbIV, cbBlockLen);
+	memcpy(pbIV, rgbIV, cbIV);
 
 	if (!NT_SUCCESS(status = BCryptSetProperty(
 		hAesAlg,
 		BCRYPT_CHAINING_MODE,
-		(PBYTE)BCRYPT_CHAIN_MODE_CBC,
-		sizeof(BCRYPT_CHAIN_MODE_CBC),
+		(PBYTE)BCRYPT_CHAIN_MODE_GCM,
+		sizeof(BCRYPT_CHAIN_MODE_GCM),
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptSetProperty\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	// Generate the key from supplied input key bytes.
@@ -140,7 +161,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGenerateSymmetricKey\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	//-------------------------------------------------------------------------
@@ -157,7 +178,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptExportKey\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 
@@ -166,7 +187,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 	if (NULL == pbBlob)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	if (!NT_SUCCESS(status = BCryptExportKey(
@@ -179,7 +200,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptExportKey\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 	else {
 		//writeFile(TEXT("TestOutKey.txt"), pbBlob, cbBlob);
@@ -202,10 +223,26 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 	if (NULL == pbPlainText)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	memcpy(pbPlainText, rgbPlaintext, sizeof(rgbPlaintext));
+
+	// This tells us the length of the authentication tag:
+	BCRYPT_AUTH_TAG_LENGTHS_STRUCT authTagLengths;
+	bcryptResult = BCryptGetProperty(hAesAlg, BCRYPT_AUTH_TAG_LENGTH, (BYTE*)&authTagLengths, sizeof(authTagLengths), &cbData, 0);
+	assert(BCRYPT_SUCCESS(bcryptResult) || !"BCryptGetProperty(BCRYPT_AUTH_TAG_LENGTH)");
+
+	std::vector<BYTE> authTag(authTagLengths.dwMaxLength);
+
+	// This sets up our nonce and GCM authentication tag parameters:
+	BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO authInfo;
+	BCRYPT_INIT_AUTH_MODE_INFO(authInfo);
+	authInfo.pbNonce = (PUCHAR)&origNonce[0]; // A nonce is required for GCM
+	authInfo.cbNonce = origNonce.size(); // The size of the nonce is provided here
+	authInfo.pbTag = &authTag[0]; // The buffer that will gain the authentication tag
+	authInfo.cbTag = authTag.size(); // The size of the authentication tag
+
 
 	//
 	// Get the output buffer size.
@@ -214,23 +251,23 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		hKey,
 		pbPlainText,
 		cbPlainText,
-		NULL,
+		&authInfo,
 		pbIV,
-		cbBlockLen,
+		cbIV,
 		NULL,
 		0,
 		&cbCipherText,
-		BCRYPT_BLOCK_PADDING)))
+		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptEncrypt\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	pbCipherText = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbCipherText);
 	if (NULL == pbCipherText)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	// Use the key to encrypt the plaintext buffer.
@@ -239,16 +276,16 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 		hKey,
 		pbPlainText,
 		cbPlainText,
-		NULL,
+		&authInfo,
 		pbIV,
-		cbBlockLen,
+		cbIV,
 		pbCipherText,
 		cbCipherText,
 		&cbData,
-		BCRYPT_BLOCK_PADDING)))
+		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptEncrypt\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 	else
 	{
@@ -272,7 +309,7 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 	if (!NT_SUCCESS(status = BCryptDestroyKey(hKey)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptDestroyKey\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 	hKey = 0;
 
@@ -284,47 +321,52 @@ void encrypter(LPCTSTR PlaintextPath, BYTE (&rgbAES128Key)[16], LPCTSTR Encrypte
 	pbPlainText = NULL;
 
 
-Cleanup:
+//Cleanup:
+//
+//	if (hAesAlg)
+//	{
+//		BCryptCloseAlgorithmProvider(hAesAlg, 0);
+//	}
+//
+//	if (hKey)
+//	{
+//		BCryptDestroyKey(hKey);
+//	}
+//
+//	if (pbCipherText)
+//	{
+//		HeapFree(GetProcessHeap(), 0, pbCipherText);
+//	}
+//
+//	if (pbPlainText)
+//	{
+//		HeapFree(GetProcessHeap(), 0, pbPlainText);
+//	}
+//
+//	if (pbKeyObject)
+//	{
+//		HeapFree(GetProcessHeap(), 0, pbKeyObject);
+//	}
+//
+//	if (pbIV)
+//	{
+//		HeapFree(GetProcessHeap(), 0, pbIV);
+//	}
+	BCryptCloseAlgorithmProvider(hAesAlg, 0);
+	BCryptDestroyKey(hKey);
+	HeapFree(GetProcessHeap(), 0, pbCipherText);
+	HeapFree(GetProcessHeap(), 0, pbPlainText);
+	HeapFree(GetProcessHeap(), 0, pbKeyObject);
+	HeapFree(GetProcessHeap(), 0, pbIV);
+}
 
-	if (hAesAlg)
-	{
-		BCryptCloseAlgorithmProvider(hAesAlg, 0);
-	}
-
-	if (hKey)
-	{
-		BCryptDestroyKey(hKey);
-	}
-
-	if (pbCipherText)
-	{
-		HeapFree(GetProcessHeap(), 0, pbCipherText);
-	}
-
-	if (pbPlainText)
-	{
-		HeapFree(GetProcessHeap(), 0, pbPlainText);
-	}
-
-	if (pbKeyObject)
-	{
-		HeapFree(GetProcessHeap(), 0, pbKeyObject);
-	}
-
-	if (pbIV)
-	{
-		HeapFree(GetProcessHeap(), 0, pbIV);
-	}
+void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
+{
+	
+	UNREFERENCED_PARAMETER(argc);
+	UNREFERENCED_PARAMETER(wargv);
+	BYTE rgbAES128Key[16] =
+	{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
+	encrypter(TEXT("Text.txt"), rgbAES128Key, TEXT("CT.txt"), TEXT("keyBlob.txt"));
 
 }
-//
-//void __cdecl wmain(int argc, __in_ecount(argc) LPWSTR *wargv)
-//{
-//	
-//	UNREFERENCED_PARAMETER(argc);
-//	UNREFERENCED_PARAMETER(wargv);
-//	BYTE rgbAES128Key[16] =
-//	{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D', 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
-//	encrypter(TEXT("Text.txt"), rgbAES128Key, TEXT("CT.txt"), TEXT("keyBlob.txt"));
-//
-//}

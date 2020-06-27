@@ -27,6 +27,12 @@ class Network : public common_data
     void validate();
 };
 
-int mainNN();
+#ifdef __cplusplus
+extern "C" {
+#endif
+	int mainNN();
+#ifdef __cplusplus
+}
+#endif
 
 #endif

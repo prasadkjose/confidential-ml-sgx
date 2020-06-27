@@ -166,7 +166,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;cabinet.lib;bcrypt.lib;Credui.lib;gdiplus.lib;sgx_urts.lib;sgx_uae_service.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;bcrypt.lib;Credui.lib;gdiplus.lib;sgx_urts.lib;sgx_uae_service.lib;sgx_tservice.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>WindowsApp.lib %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
@@ -185,7 +185,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;cabinet.lib;bcrypt.lib;Credui.lib;gdiplus.lib;sgx_urts_sim.lib;sgx_uae_service_sim.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;cabinet.lib;bcrypt.lib;Credui.lib;gdiplus.lib;sgx_urts_sim.lib;sgx_uae_service_sim.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>WindowsApp.lib %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
@@ -204,7 +204,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;cabinet.lib;bcrypt.lib;Credui.lib;gdiplus.lib;sgx_urts.lib;sgx_uae_service.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;bcrypt.lib;Credui.lib;gdiplus.lib;sgx_urts.lib;sgx_uae_service.lib;sgx_tservice.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>WindowsApp.lib %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
@@ -223,7 +223,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>comctl32.lib;cabinet.lib;bcrypt.lib;Credui.lib;gdiplus.lib;sgx_urts_sim.lib;sgx_uae_service_sim.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;cabinet.lib;bcrypt.lib;Credui.lib;gdiplus.lib;sgx_urts_sim.lib;sgx_uae_service_sim.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>WindowsApp.lib %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>$(SGXSDKInstallPath)\bin\$(Platform)\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
@@ -310,7 +310,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Compress\Compress.cpp" />
     <ClCompile Include="CryptoEnclave_u.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Prerelease|x64'">
       </PrecompiledHeader>
@@ -337,23 +336,10 @@
     <ClCompile Include="kitchensink.cpp" />
     <ClCompile Include="MainHelpers.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="NeuralCLI\common.cpp" />
-    <ClCompile Include="NeuralCLI\data.cpp" />
-    <ClCompile Include="NeuralCLI\data_handler.cpp" />
-    <ClCompile Include="NeuralCLI\hidden_layer.cpp" />
-    <ClCompile Include="NeuralCLI\input_layer.cpp" />
-    <ClCompile Include="NeuralCLI\layer.cpp" />
-    <ClCompile Include="NeuralCLI\network.cpp" />
-    <ClCompile Include="NeuralCLI\neuron.cpp" />
-    <ClCompile Include="NeuralCLI\output_layer.cpp" />
-    <ClCompile Include="NNHelpers.cpp" />
     <ClCompile Include="PrintConsole.cpp" />
-    <ClCompile Include="Source.cpp" />
-    <ClCompile Include="user.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Compress\Compress.h" />
     <ClInclude Include="CryptoEnclave_u.h" />
     <ClInclude Include="DRNG.h" />
     <ClInclude Include="Enclave.h" />
@@ -361,16 +347,6 @@
     <ClInclude Include="EncrypterCLI\FileIOHandler.h" />
     <ClInclude Include="EncrypterHelpers.h" />
     <ClInclude Include="MainHelpers.h" />
-    <ClInclude Include="NeuralCLI\common.hpp" />
-    <ClInclude Include="NeuralCLI\data.hpp" />
-    <ClInclude Include="NeuralCLI\data_handler.hpp" />
-    <ClInclude Include="NeuralCLI\hidden_layer.hpp" />
-    <ClInclude Include="NeuralCLI\input_layer.hpp" />
-    <ClInclude Include="NeuralCLI\layer.hpp" />
-    <ClInclude Include="NeuralCLI\network.hpp" />
-    <ClInclude Include="NeuralCLI\neuron.hpp" />
-    <ClInclude Include="NeuralCLI\output_layer.hpp" />
-    <ClInclude Include="NNHelpers.h" />
     <ClInclude Include="PrintConsole.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="User.h" />

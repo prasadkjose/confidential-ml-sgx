@@ -1,13 +1,17 @@
 enclave {
     from "sgx_tstdc.edl" import *;
+	from "sealing/Sealing.edl" import *;
 
     trusted {
         /* define ECALLs here. */
-		public void foo([out, size=len] char* buf, size_t len);
+		public int generate_random_number([out, size=len] char* buf, size_t len);
+		
+
+		
     };
 
     untrusted {
         /* define OCALLs here. */
-
+		 void ocall_print([in, string]const char* str);
     };
 };

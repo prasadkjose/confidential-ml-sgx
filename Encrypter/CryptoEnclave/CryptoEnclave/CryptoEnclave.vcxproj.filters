@@ -16,6 +16,12 @@
       <UniqueIdentifier>{34dfbe7d-3c22-45cd-95ac-7f11b4d69449}</UniqueIdentifier>
       <Extensions>rc;xml;pem;</Extensions>
     </Filter>
+    <Filter Include="Source Files\sealing">
+      <UniqueIdentifier>{778aa6a2-9804-415d-9122-d385cd63f22a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sealing">
+      <UniqueIdentifier>{26edc7e0-de34-41cb-a5ab-b4bd3571d55d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(projectname)_t.c">
@@ -23,6 +29,9 @@
     </ClCompile>
     <ClCompile Include="$(projectname).cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sealing\Sealing.cpp">
+      <Filter>Source Files\sealing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +52,9 @@
   <ItemGroup>
     <None Include="CryptoEnclave_private.pem">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sealing\Sealing.edl">
+      <Filter>Source Files\sealing</Filter>
     </None>
   </ItemGroup>
 </Project>

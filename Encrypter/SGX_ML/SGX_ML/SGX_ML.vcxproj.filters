@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\NeuralCLI">
+      <UniqueIdentifier>{e74154bf-f821-4bcd-8961-a9c3f3e6e5b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\NeuralCLI">
+      <UniqueIdentifier>{37a972f5-f106-41e6-acd2-f060f8894f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{c67b4678-03ce-4dc1-b6ce-a5bf1b7e3674}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SGX_ML.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NNHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\common.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\data.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\data_handler.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\hidden_layer.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\input_layer.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\layer.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\network.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\neuron.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralCLI\output_layer.hpp">
+      <Filter>Header Files\NeuralCLI</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintConsole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EncrypterCLI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileIOHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DRNG.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enclave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CryptoEnclave_u.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SGX_ML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NNHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\common.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\data.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\data_handler.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\hidden_layer.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\input_layer.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\layer.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\network.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\neuron.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralCLI\output_layer.cpp">
+      <Filter>Source Files\NeuralCLI</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintConsole.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EncrypterCLI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileIOHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DRNG.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enclave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CryptoEnclave_u.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SGX_ML.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="SGX_ML.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\CryptoEnclave\CryptoEnclave\CryptoEnclave.edl">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

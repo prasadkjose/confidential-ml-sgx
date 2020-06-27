@@ -1,9 +1,10 @@
+
 #include "network.hpp"
 #include "layer.hpp"
 #include "data_handler.hpp"
 #include <time.h>
 #include "../PrintConsole.h"
-#include <Windows.h>
+
 
 Network::Network(std::vector<int> hiddenLayerSpec, int inputSize, int numClasses)
 {
@@ -140,44 +141,44 @@ void Network::validate()
 }
 
 
-int mainNN()
-{
-  data_handler *dh = new data_handler();
-//#ifdef MNIST
-  //TODO Take File names as input
-  dh->read_input_data("data/300-train");
- // dh->read_input_data("data/400-train");
-  dh->read_label_data("data/300-labels");
-  //dh->read_label_data("data/400-labels");
-//#else
-  //dh->read_csv("/home/gerardta/iris.data", ",");
-//#endif
+	int mainNN()
+	{
+		data_handler *dh = new data_handler();
+		//#ifdef MNIST
+		  //TODO Take File names as input
+		//dh->read_input_data("data/300-train");
+		// dh->read_input_data("data/400-train");
+		//dh->read_label_data("data/300-labels");
+		//dh->read_label_data("data/400-labels");
+	  //#else
+		dh->read_csv("data/bezdekIris.data", ",");
+	  //#endif
 
 
-  dh->normalize();
+		dh->normalize();
 
-  dh->count_classes();
-  dh->split_data();
-  std::vector<int> hiddenLayers = { 50 };
-  Network *net = new Network(hiddenLayers, dh->get_test_data()->at(0)->get_normalized_feature_vector()->size(), dh->get_class_counts());
-  net->set_training_data(dh->get_training_data());
-  net->set_test_data(dh->get_test_data());
-  net->set_validation_data(dh->get_validation_data());
-  
-  for (int i = 0; i < 5; i++)
-  {	
-	  
+		dh->count_classes();
+		dh->split_data();
+		std::vector<int> hiddenLayers = { 50 };
+		Network *net = new Network(hiddenLayers, dh->get_test_data()->at(0)->get_normalized_feature_vector()->size(), dh->get_class_counts());
+		net->set_training_data(dh->get_training_data());
+		net->set_test_data(dh->get_test_data());
+		net->set_validation_data(dh->get_validation_data());
 
-	  wchar_t buf[100];
-	  int len = swprintf_s(buf, 100, L"%s%d", L"Iteration:",i);
-	  __printf((LPWSTR)buf);
+		for (int i = 0; i < 5; i++)
+		{
 
-	  net->train();
 
-  }
-  net->test();
+			wchar_t buf[100];
+			int len = swprintf_s(buf, 100, L"%s%d", L"Iteration:", i);
+			__printf((LPWSTR)buf);
 
-  delete(dh);
-  delete(net);
-  return 1;
-}
+			net->train();
+
+		}
+		net->test();
+
+		delete(dh);
+		delete(net);
+		return 1;
+	}

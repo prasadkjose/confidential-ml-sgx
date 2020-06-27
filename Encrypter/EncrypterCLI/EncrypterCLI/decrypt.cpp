@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <bcrypt.h>
 #include "FileIOHandler.h"
-
+#include <assert.h>
+#include <vector>
 #define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
 
 #define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
@@ -38,11 +39,12 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 
 	//Size in bytes of the buffers. 
 	//TODO: Dynamically allocate cbCipherText size
-	DWORD                   cbCipherText = 48,
+	DWORD                   cbCipherText = 40,
 		cbPlainText = 0,
 		cbData = 0,
 		cbKeyObject = 0,
 		cbBlockLen = 0,
+		cbIV = 12,
 		cbBlob = 560;
 	//Buffers
 	PBYTE                   pbCipherText = NULL,
@@ -50,6 +52,21 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 		pbKeyObject = NULL,
 		pbIV = NULL,
 		pbBlob = NULL;
+	NTSTATUS bcryptResult = 0;
+	// To be clear, we're using an IV and a GCM nonce that are all
+	// zeroes. This is only for testing. In a real application,
+	// you MUST ensure the GCM nonce is never repeated. If you fail
+	// to do so, your implementation will be inherently insecure.
+
+	// Create an IV that is the same size as Botan's:
+	const size_t AES_IV_SIZE = 12;
+	const std::vector<BYTE> origIV = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+
+	// This must always be 96 bits (12 bytes):
+	const size_t GCM_NONCE_SIZE = 12;
+	const std::vector<BYTE> origNonce = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+
+	// We are going to do in-place encryption:
 
 
 	//Read CipherText from File
@@ -95,7 +112,18 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
-		goto Cleanup;
+		//goto Cleanup;
+	}
+
+	if (!NT_SUCCESS(status = BCryptSetProperty(
+		hAesAlg,
+		BCRYPT_CHAINING_MODE,
+		(PBYTE)BCRYPT_CHAIN_MODE_GCM,
+		sizeof(BCRYPT_CHAIN_MODE_GCM),
+		0)))
+	{
+		wprintf(L"**** Error 0x%x returned by BCryptSetProperty\n", status);
+		//goto Cleanup;
 	}
 
 	// Calculate the size of the buffer to hold the KeyObject.
@@ -108,7 +136,7 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	// Allocate the key object on the heap.
@@ -116,7 +144,7 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 	if (NULL == pbKeyObject)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
 	// Calculate the block length for the IV.
@@ -129,7 +157,7 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 	else
 	{
@@ -137,36 +165,27 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 	}
 
 	// Determine whether the cbBlockLen is not longer than the IV length.
-	if (cbBlockLen > sizeof(rgbIV))
-	{
-		wprintf(L"**** block length is longer than the provided IV length\n");
-		goto Cleanup;
-	}
+	//if (cbBlockLen > sizeof(rgbIV))
+	//{
+	//	wprintf(L"**** block length is longer than the provided IV length\n");
+	//	goto Cleanup;
+	//}
 
 	// Allocate a buffer for the IV. The buffer is consumed during the 
 	// encrypt/decrypt process.
-	pbIV = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlockLen);
+	pbIV = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbIV);
 	if (NULL == pbIV)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
 
-	memcpy(pbIV, rgbIV, cbBlockLen);
+	memcpy(pbIV, rgbIV, cbIV);
 	/*wprintf(L"IV is :\n");
 	for (int i = 0; i < cbBlockLen; i++)
 		printf("%x \n", pbIV[i]);
 */
-	if (!NT_SUCCESS(status = BCryptSetProperty(
-		hAesAlg,
-		BCRYPT_CHAINING_MODE,
-		(PBYTE)BCRYPT_CHAIN_MODE_CBC,
-		sizeof(BCRYPT_CHAIN_MODE_CBC),
-		0)))
-	{
-		wprintf(L"**** Error 0x%x returned by BCryptSetProperty\n", status);
-		goto Cleanup;
-	}
+	
 
 
 
@@ -189,7 +208,7 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 	if (NULL == pbBlob)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+	//	goto Cleanup;
 	}
 
 	if (!NT_SUCCESS(status = BCryptImportKey(
@@ -204,9 +223,23 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptImportSymmetricKey\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
-	 
+	BCRYPT_AUTH_TAG_LENGTHS_STRUCT authTagLengths;
+	bcryptResult = BCryptGetProperty(hAesAlg, BCRYPT_AUTH_TAG_LENGTH, (BYTE*)&authTagLengths, sizeof(authTagLengths), &cbData, 0);
+	assert(BCRYPT_SUCCESS(bcryptResult) || !"BCryptGetProperty(BCRYPT_AUTH_TAG_LENGTH)");
+
+	std::vector<BYTE> authTag(authTagLengths.dwMaxLength);
+
+	// This sets up our nonce and GCM authentication tag parameters:
+	BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO authInfo;
+	BCRYPT_INIT_AUTH_MODE_INFO(authInfo);
+	authInfo.pbNonce = (PUCHAR)&origNonce[0]; // A nonce is required for GCM
+	authInfo.cbNonce = origNonce.size(); // The size of the nonce is provided here
+	authInfo.pbTag = &authTag[0]; // The buffer that will gain the authentication tag
+	authInfo.cbTag = authTag.size(); // The size of the authentication tag
+
+
 
 
 	//
@@ -218,17 +251,17 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 		hKey,
 		rgbCrypto,
 		cbCipherText,
-		NULL,
+		&authInfo,
 		pbIV,
-		cbBlockLen,
+		cbIV,
 		NULL,
 		0,
 		&cbPlainText,
-		BCRYPT_BLOCK_PADDING)))
+		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptDecrypt of size \n", status);
 
-		goto Cleanup;
+		//goto Cleanup;
 	}
 	else {
 		printf("Plaintext Size : %d\n", cbPlainText);
@@ -239,7 +272,7 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 	if (NULL == pbPlainText)
 	{
 		wprintf(L"**** memory allocation failed\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
 	else
 	{
@@ -253,16 +286,16 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 		hKey,
 		rgbCrypto,
 		cbCipherText,
-		NULL,
+		&authInfo,
 		pbIV,
-		cbBlockLen,
+		cbIV,
 		pbPlainText,
 		cbPlainText,
 		&cbPlainText,
-		BCRYPT_BLOCK_PADDING)))
+		0)))
 	{
 		wprintf(L"**** Error 0x%x returned by BCryptDecrypt\n", status);
-		goto Cleanup;
+		//goto Cleanup;
 	}
 	else {
 		wprintf(L"Plaintext Data :\n");
@@ -280,47 +313,63 @@ void decrypt(LPCTSTR CipherTextPath, LPCTSTR KeyBlobPath, LPCTSTR PlainTextPath)
 	if (0 != memcmp(pbPlainText, (PBYTE)rgbPlaintext, sizeof(rgbPlaintext)))
 	{
 		wprintf(L"Expected decrypted text comparison failed.\n");
-		goto Cleanup;
+		//goto Cleanup;
 	}
+	else
+	{
+		wprintf(L"Decrypted Data :\n");
+		for (int i = 0; i < cbPlainText; i++)
+			printf("%x \n", pbPlainText[i]);
+		wprintf(L"Comparison success.\n");
+		writeFile(PlainTextPath, pbPlainText, cbPlainText);
+
+	}
+
 
 	wprintf(L"Success!\n");
 
+	BCryptCloseAlgorithmProvider(hAesAlg, 0);
+	BCryptDestroyKey(hKey);
+	HeapFree(GetProcessHeap(), 0, rgbCrypto);
+	HeapFree(GetProcessHeap(), 0, pbPlainText);
+	HeapFree(GetProcessHeap(), 0, pbKeyObject);
+	HeapFree(GetProcessHeap(), 0, pbIV);
 
-Cleanup:
-
-	if (hAesAlg)
-	{
-		BCryptCloseAlgorithmProvider(hAesAlg, 0);
-	}
-
-	if (hKey)
-	{
-		BCryptDestroyKey(hKey);
-	}
-
-	if (rgbCrypto)
-	{
-		HeapFree(GetProcessHeap(), 0, rgbCrypto);
-	}
-
-	if (pbPlainText)
-	{
-		HeapFree(GetProcessHeap(), 0, pbPlainText);
-	}
-
-	if (pbKeyObject)
-	{
-		HeapFree(GetProcessHeap(), 0, pbKeyObject);
-	}
-
-	if (pbIV)
-	{
-		HeapFree(GetProcessHeap(), 0, pbIV);
-	}
-
+//Cleanup:
+//
+//	if (hAesAlg)
+//	{
+//		BCryptCloseAlgorithmProvider(hAesAlg, 0);
+//	}
+//
+//	if (hKey)
+//	{
+//		BCryptDestroyKey(hKey);
+//	}
+//
+//	if (rgbCrypto)
+//	{
+//		HeapFree(GetProcessHeap(), 0, rgbCrypto);
+//	}
+//
+//	if (pbPlainText)
+//	{
+//		HeapFree(GetProcessHeap(), 0, pbPlainText);
+//	}
+//
+//	if (pbKeyObject)
+//	{
+//		HeapFree(GetProcessHeap(), 0, pbKeyObject);
+//	}
+//
+//	if (pbIV)
+//	{
+//		HeapFree(GetProcessHeap(), 0, pbIV);
+//	}
+//
 }
 
-void main()
-{
-	decrypt(TEXT("CT.txt"), TEXT("keyBlob.txt"), TEXT("PT.txt"));
-}
+//void main()
+//{
+//	decrypt(TEXT("CT.txt"), TEXT("keyBlob.txt"), TEXT("PT.txt"));
+//}

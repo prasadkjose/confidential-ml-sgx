@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 #include "ShObjIdl_core.h"
-
+#include "PrintConsole.h"
 // Defines start with 10*. Example 100, 101....
 #define OPEN_ENCRYPT_FILE_BUTTON 100
 #define SAVE_ENCRYPTED 101

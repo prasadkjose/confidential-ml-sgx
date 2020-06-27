@@ -1,386 +1,131 @@
 //#include <windows.h>
-//#include <stdio.h>
-//#include <bcrypt.h>
-//#include "FileIOHandler.h"
+//#include <assert.h>
+//#include <vector>
+//#include <Bcrypt.h>
+//#include <iostream>
+//#include <string>
+//#include <string.h>
+//#include <wincrypt.h>
+//#include <ntstatus.h>
+//#pragma comment(lib, "bcrypt.lib")
 //
+//// Base 64 library:
+//// http://renenyffenegger.ch/notes/development/Base64/Encoding-and-decoding-base-64-with-cpp
+//#include "base64.h"
 //
-//#define NT_SUCCESS(Status)          (((NTSTATUS)(Status)) >= 0)
-//
-//#define STATUS_UNSUCCESSFUL         ((NTSTATUS)0xC0000001L)
-//
-//#define DATA_TO_ENCRYPT  "Test Data"
-//
-//
-////const BYTE rgbPlaintext;
-////{ 'P', 'A', 'S', 'S', 'W', 'O', 'R', 'D' };
-//
-//static const BYTE rgbIV[] =
-//{
-//	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-//	0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
-//};
-//
-//static const BYTE rgbAES128Key[] =
-//{
-//	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-//	0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F
-//};
-//
-////void PrintBytes(
-////	IN BYTE     *pbPrintData,
-////	IN DWORD    cbDataLen)
-////{
-////	DWORD dwCount = 0;
-////
-////	for (dwCount = 0; dwCount < cbDataLen; dwCount++)
-////	{
-////		printf("0x%02x, ", pbPrintData[dwCount]);
-////
-////		if (0 == (dwCount + 1) % 10) putchar('\n');
-////	}
-////
-////}
-//
-//void __cdecl wmain(	int argc,	__in_ecount(argc) LPWSTR *wargv)
-//{
-//	//printf("%d", sizeof(rgbPlaintext));
-//	
-//	BYTE rgbPlaintext[17] = { 0 };
-//	readFile(TEXT("Text.txt"), rgbPlaintext, 17);
-//
-//	BCRYPT_ALG_HANDLE       hAesAlg = NULL;
-//	BCRYPT_KEY_HANDLE       hKey = NULL;
-//	NTSTATUS                status = STATUS_UNSUCCESSFUL;
-//	//Size in bytes of the buffers. 
-//	DWORD                   cbCipherText = 0,
-//		cbPlainText = 0,
-//		cbData = 0,
-//		cbKeyObject = 0,
-//		cbBlockLen = 0,
-//		cbBlob = 0;
-//	//Buffers
-//	PBYTE                   pbCipherText = NULL,
-//		pbPlainText = NULL,
-//		pbKeyObject = NULL,
-//		pbIV = NULL,
-//		pbBlob = NULL;
-//
-//	UNREFERENCED_PARAMETER(argc);
-//	UNREFERENCED_PARAMETER(wargv);
-//
-//
-//	// Open an algorithm handle.
-//	if (!NT_SUCCESS(status = BCryptOpenAlgorithmProvider(
-//		&hAesAlg,
-//		BCRYPT_AES_ALGORITHM,
-//		NULL,
-//		0)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptOpenAlgorithmProvider\n", status);
-//		goto Cleanup;
-//	}
-//
-//	// Calculate the size of the buffer to hold the KeyObject.
-//	if (!NT_SUCCESS(status = BCryptGetProperty(
-//		hAesAlg,
-//		BCRYPT_OBJECT_LENGTH,
-//		(PBYTE)&cbKeyObject,
-//		sizeof(DWORD),
-//		&cbData,
-//		0)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
-//		goto Cleanup;
-//	}
-//
-//	// Allocate the key object on the heap.
-//	pbKeyObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbKeyObject);
-//	if (NULL == pbKeyObject)
-//	{
-//		wprintf(L"**** memory allocation failed\n");
-//		goto Cleanup;
-//	}
-//
-//	// Calculate the block length for the IV.
-//	if (!NT_SUCCESS(status = BCryptGetProperty(
-//		hAesAlg,
-//		BCRYPT_BLOCK_LENGTH,
-//		(PBYTE)&cbBlockLen,
-//		sizeof(DWORD),
-//		&cbData,
-//		0)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptGetProperty\n", status);
-//		goto Cleanup;
-//	}
-//
-//	// Determine whether the cbBlockLen is not longer than the IV length.
-//	if (cbBlockLen > sizeof(rgbIV))
-//	{
-//		wprintf(L"**** block length is longer than the provided IV length\n");
-//		goto Cleanup;
-//	}
-//
-//	// Allocate a buffer for the IV. The buffer is consumed during the 
-//	// encrypt/decrypt process.
-//	pbIV = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlockLen);
-//	if (NULL == pbIV)
-//	{
-//		wprintf(L"**** memory allocation failed\n");
-//		goto Cleanup;
-//	}
-//
-//	memcpy(pbIV, rgbIV, cbBlockLen);
-//
-//	if (!NT_SUCCESS(status = BCryptSetProperty(
-//		hAesAlg,
-//		BCRYPT_CHAINING_MODE,
-//		(PBYTE)BCRYPT_CHAIN_MODE_CBC,
-//		sizeof(BCRYPT_CHAIN_MODE_CBC),
-//		0)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptSetProperty\n", status);
-//		goto Cleanup;
-//	}
-//
-//
-//
-//	// Generate the key from supplied input key bytes.
-//	if (!NT_SUCCESS(status = BCryptGenerateSymmetricKey(
-//		hAesAlg,
-//		&hKey,
-//		pbKeyObject,
-//		cbKeyObject,
-//		(PBYTE)rgbAES128Key,
-//		sizeof(rgbAES128Key),
-//		0)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptGenerateSymmetricKey\n", status);
-//		goto Cleanup;
-//	}
-//
-//
-//	// Save another copy of the key for later.
-//	if (!NT_SUCCESS(status = BCryptExportKey(
-//		hKey,
-//		NULL,
-//		BCRYPT_OPAQUE_KEY_BLOB,
-//		NULL,
-//		0,
-//		&cbBlob,
-//		0)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptExportKey\n", status);
-//		goto Cleanup;
-//	}
-//
-//
-//	// Allocate the buffer to hold the BLOB.
-//	pbBlob = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbBlob);
-//	if (NULL == pbBlob)
-//	{
-//		wprintf(L"**** memory allocation failed\n");
-//		goto Cleanup;
-//	}
-//
-//	if (!NT_SUCCESS(status = BCryptExportKey(
-//		hKey,
-//		NULL,
-//		BCRYPT_OPAQUE_KEY_BLOB,
-//		pbBlob,
-//		cbBlob,
-//		&cbBlob,
-//		0)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptExportKey\n", status);
-//		goto Cleanup;
-//	}
-//
-//	cbPlainText = sizeof(rgbPlaintext);
-//	pbPlainText = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbPlainText);
-//	if (NULL == pbPlainText)
-//	{
-//		wprintf(L"**** memory allocation failed\n");
-//		goto Cleanup;
-//	}
-//
-//	memcpy(pbPlainText, rgbPlaintext, sizeof(rgbPlaintext));
-//
-//	//
-//	// Get the output buffer size.
-//	//
-//	if (!NT_SUCCESS(status = BCryptEncrypt(
-//		hKey,
-//		pbPlainText,
-//		cbPlainText,
-//		NULL,
-//		pbIV,
-//		cbBlockLen,
-//		NULL,
-//		0,
-//		&cbCipherText,
-//		BCRYPT_BLOCK_PADDING)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptEncrypt\n", status);
-//		goto Cleanup;
-//	}
-//
-//	pbCipherText = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbCipherText);
-//	if (NULL == pbCipherText)
-//	{
-//		wprintf(L"**** memory allocation failed\n");
-//		goto Cleanup;
-//	}
-//
-//	// Use the key to encrypt the plaintext buffer.
-//	// For block sized messages, block padding will add an extra block.
-//	if (!NT_SUCCESS(status = BCryptEncrypt(
-//		hKey,
-//		pbPlainText,
-//		cbPlainText,
-//		NULL,
-//		pbIV,
-//		cbBlockLen,
-//		pbCipherText,
-//		cbCipherText,
-//		&cbData,
-//		BCRYPT_BLOCK_PADDING)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptEncrypt\n", status);
-//		goto Cleanup;
-//	}
-//	else
-//	{
-//		for (int i = 0; i < cbCipherText; i++)
-//			printf("%x", pbCipherText[i]);
-//		printf("\n %s", "Encryption Complete");
-//
-//	}
-//	// Destroy the key and reimport from saved BLOB.
-//	if (!NT_SUCCESS(status = BCryptDestroyKey(hKey)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptDestroyKey\n", status);
-//		goto Cleanup;
-//	}
-//	hKey = 0;
-//
-//	if (pbPlainText)
-//	{
-//		HeapFree(GetProcessHeap(), 0, pbPlainText);
-//	}
-//
-//	pbPlainText = NULL;
-//
-//	// We can reuse the key object.
-//	memset(pbKeyObject, 0, cbKeyObject);
-//
-//
-//	// Reinitialize the IV because encryption would have modified it.
-//	memcpy(pbIV, rgbIV, cbBlockLen);
-//
-//
-//	if (!NT_SUCCESS(status = BCryptImportKey(
-//		hAesAlg,
-//		NULL,
-//		BCRYPT_OPAQUE_KEY_BLOB,
-//		&hKey,
-//		pbKeyObject,
-//		cbKeyObject,
-//		pbBlob,
-//		cbBlob,
-//		0)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptGenerateSymmetricKey\n", status);
-//		goto Cleanup;
-//	}
-//
-//
-//	//
-//	// Get the output buffer size.
-//	//
-//	if (!NT_SUCCESS(status = BCryptDecrypt(
-//		hKey,
-//		pbCipherText,
-//		cbCipherText,
-//		NULL,
-//		pbIV,
-//		cbBlockLen,
-//		NULL,
-//		0,
-//		&cbPlainText,
-//		BCRYPT_BLOCK_PADDING)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptDecrypt\n", status);
-//		goto Cleanup;
-//	}
-//
-//	pbPlainText = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbPlainText);
-//	if (NULL == pbPlainText)
-//	{
-//		wprintf(L"**** memory allocation failed\n");
-//		goto Cleanup;
-//	}
-//
-//	if (!NT_SUCCESS(status = BCryptDecrypt(
-//		hKey,
-//		pbCipherText,
-//		cbCipherText,
-//		NULL,
-//		pbIV,
-//		cbBlockLen,
-//		pbPlainText,
-//		cbPlainText,
-//		&cbPlainText,
-//		BCRYPT_BLOCK_PADDING)))
-//	{
-//		wprintf(L"**** Error 0x%x returned by BCryptDecrypt\n", status);
-//		goto Cleanup;
-//	}
-//	else {
-//		for (int i = 0; i < cbPlainText; i++)
-//			printf("%X \n", pbPlainText[i]);
-//	}
-//
-//
-//	if (0 != memcmp(pbPlainText, (PBYTE)rgbPlaintext, sizeof(rgbPlaintext)))
-//	{
-//		wprintf(L"Expected decrypted text comparison failed.\n");
-//		goto Cleanup;
-//	}
-//
-//	wprintf(L"Success!\n");
-//
-//
-//Cleanup:
-//
-//	if (hAesAlg)
-//	{
-//		BCryptCloseAlgorithmProvider(hAesAlg, 0);
-//	}
-//
-//	if (hKey)
-//	{
-//		BCryptDestroyKey(hKey);
-//	}
-//
-//	if (pbCipherText)
-//	{
-//		HeapFree(GetProcessHeap(), 0, pbCipherText);
-//	}
-//
-//	if (pbPlainText)
-//	{
-//		HeapFree(GetProcessHeap(), 0, pbPlainText);
-//	}
-//
-//	if (pbKeyObject)
-//	{
-//		HeapFree(GetProcessHeap(), 0, pbKeyObject);
-//	}
-//
-//	if (pbIV)
-//	{
-//		HeapFree(GetProcessHeap(), 0, pbIV);
-//	}
-//
+//void printB64(BYTE *buffer, size_t length) {
+//	std::string result = base64_encode(buffer, length);
+//	std::cout << "Buffer (size: " << length << "): " << result << std::endl;
 //}
+//
+//int main(int argc, CHAR* argv[]) {
+//	NTSTATUS bcryptResult = 0;
+//	DWORD bytesDone = 0;
+//
+//	// This gets us the AES algorithm:
+//	BCRYPT_ALG_HANDLE algHandle = 0;
+//	bcryptResult = BCryptOpenAlgorithmProvider(&algHandle, BCRYPT_AES_ALGORITHM, 0, 0);
+//	assert(BCRYPT_SUCCESS(bcryptResult) || !"BCryptOpenAlgorithmProvider");
+//
+//	// This sets up the GCM chaining mode:
+//	bcryptResult = BCryptSetProperty(algHandle, BCRYPT_CHAINING_MODE, (BYTE*)BCRYPT_CHAIN_MODE_GCM, sizeof(BCRYPT_CHAIN_MODE_GCM), 0);
+//	assert(BCRYPT_SUCCESS(bcryptResult) || !"BCryptSetProperty(BCRYPT_CHAINING_MODE)");
+//
+//	// This tells us the length of the authentication tag:
+//	BCRYPT_AUTH_TAG_LENGTHS_STRUCT authTagLengths;
+//	bcryptResult = BCryptGetProperty(algHandle, BCRYPT_AUTH_TAG_LENGTH, (BYTE*)&authTagLengths, sizeof(authTagLengths), &bytesDone, 0);
+//	assert(BCRYPT_SUCCESS(bcryptResult) || !"BCryptGetProperty(BCRYPT_AUTH_TAG_LENGTH)");
+//
+//	std::cout << "Auth Tag Length (min): " << authTagLengths.dwMinLength << std::endl;
+//	std::cout << "Auth Tag Length (max): " << authTagLengths.dwMaxLength << std::endl;
+//
+//	// This tells us the length of the block:
+//	DWORD blockLength = 0;
+//	bcryptResult = BCryptGetProperty(algHandle, BCRYPT_BLOCK_LENGTH, (BYTE*)&blockLength, sizeof(blockLength), &bytesDone, 0);
+//	assert(BCRYPT_SUCCESS(bcryptResult) || !"BCryptGetProperty(BCRYPT_BLOCK_LENGTH)");
+//
+//	std::cout << "Block Length: " << blockLength << std::endl;
+//
+//	BCRYPT_KEY_HANDLE keyHandle = 0;
+//	std::string decodedKeyString = base64_decode("PASSWORDpasswordPASSWORDpassword");
+//	const std::vector<BYTE> key(decodedKeyString.data(), decodedKeyString.data() + blockLength);
+//
+//	// This function takes the key buffer and directly uses it as a key. It does not manipulate
+//	// it in a way that would cause it not to match on the Botan side.
+//	bcryptResult = BCryptGenerateSymmetricKey(algHandle, &keyHandle, 0, 0, (PUCHAR)&key[0], key.size(), 0);
+//	assert(BCRYPT_SUCCESS(bcryptResult) || !"BCryptGenerateSymmetricKey");
+//
+//	std::cout << "Key: ";
+//	printB64((BYTE *)&key[0], key.size());
+//
+//	UCHAR namebuff[256];
+//	ULONG tempSize = 256; // We ignore this because we know the buffer is big enough.
+//	const WCHAR *name = (const WCHAR *)namebuff;
+//	bcryptResult = BCryptGetProperty(algHandle, BCRYPT_ALGORITHM_NAME, namebuff, sizeof(namebuff), &tempSize, 0);
+//	std::cout << "Obtained algorithm name: ";
+//	std::wcout << name << std::endl; // Outputs: AES
+//
+//	bcryptResult = BCryptGetProperty(algHandle, BCRYPT_CHAINING_MODE, namebuff, sizeof(namebuff), &tempSize, 0);
+//	std::cout << "Obtained chaining mode: ";
+//	std::wcout << name << std::endl; // Outputs: ChainingModeGCM
+//
+//	// To be clear, we're using an IV and a GCM nonce that are all
+//	// zeroes. This is only for testing. In a real application,
+//	// you MUST ensure the GCM nonce is never repeated. If you fail
+//	// to do so, your implementation will be inherently insecure.
+//
+//	// Create an IV that is the same size as Botan's:
+//	const size_t AES_IV_SIZE = 12;
+//	const std::vector<BYTE> origIV = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+//
+//	std::cout << "Initialization Vector: ";
+//	printB64((BYTE *)&origIV[0], origIV.size());
+//
+//	// This must always be 96 bits (12 bytes):
+//	const size_t GCM_NONCE_SIZE = 12;
+//	const std::vector<BYTE> origNonce = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+//
+//	std::cout << "Nonce: ";
+//	printB64((BYTE *)&origNonce[0], origNonce.size());
+//
+//	// This needs to be a multiple of the block size (128 bits/16 bytes) for Windows CNG. Our example is 128 bytes in ASCII (16 * 8 = 128)
+//	std::string plaintext("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567809AB");
+//	const std::vector<BYTE> plaintextVector(plaintext.data(), plaintext.data() + plaintext.length());
+//
+//	// We are going to do in-place encryption:
+//	std::vector<BYTE> encrypted = plaintextVector;
+//	std::vector<BYTE> authTag(authTagLengths.dwMaxLength);
+//
+//	// This sets up our nonce and GCM authentication tag parameters:
+//	BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO authInfo;
+//	BCRYPT_INIT_AUTH_MODE_INFO(authInfo);
+//	authInfo.pbNonce = (PUCHAR)&origNonce[0]; // A nonce is required for GCM
+//	authInfo.cbNonce = origNonce.size(); // The size of the nonce is provided here
+//	authInfo.pbTag = &authTag[0]; // The buffer that will gain the authentication tag
+//	authInfo.cbTag = authTag.size(); // The size of the authentication tag
+//
+//	std::cout << "Plaintext (" << plaintext.length() << " bytes): " << plaintext << std::endl;
+//
+//	bcryptResult = BCryptEncrypt(
+//		keyHandle,
+//		&encrypted[0], encrypted.size(), // Plaintext and its associated size
+//		&authInfo, // Must be a BCRYPT_AUTHENTICATED_CIPHER_MODE_INFO for GCM
+//		(PUCHAR)&origIV[0], 12, // No initialization vector provided. We'd want to change this.
+//		&encrypted[0], encrypted.size(), // The buffer in which to store the encrypted output and its size
+//		&bytesDone, 0
+//	);
+//
+//	std::cout << "AES-128/GCM(16) ciphertext: ";
+//	printB64((BYTE *)&encrypted[0], encrypted.size());
+//
+//	std::cout << "Auth Tag: ";
+//	printB64((BYTE *)&authTag[0], authTag.size());
+//
+//	assert(BCRYPT_SUCCESS(bcryptResult) || !"BCryptEncrypt");
+//	assert(bytesDone == encrypted.size());
+//
+//	// Cleanup
+//	BCryptDestroyKey(keyHandle);
+//	BCryptCloseAlgorithmProvider(algHandle, 0);
+//
+//	return 0;
