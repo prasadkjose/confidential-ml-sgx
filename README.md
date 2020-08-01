@@ -52,7 +52,7 @@ This platform was built with
 
 - [c++](https://www.cplusplus.com)
 - [WinAPI](https://docs.microsoft.com/en-us/windows/win32/)
-- [Intel SGX](https://laravel.com)
+- [Intel SGX](https://software.intel.com/content/www/us/en/develop/topics/software-guard-extensions.html)
 
 <!-- GETTING STARTED -->
 
