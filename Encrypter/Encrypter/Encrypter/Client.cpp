@@ -183,8 +183,8 @@ LRESULT CALLBACK ClientWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 		case LOGIN_NEXT :
 			//Authenticate User
 			
-			//if (authenticateWinCred(5, uhash, cbUhash))
-			if(1)
+			if (authenticateWinCred(5, uhash, cbUhash))
+			//if(1)
 			{
 				//Remove the LoginControls
 				removeLoginContols(hwnd);

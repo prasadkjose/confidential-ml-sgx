@@ -138,8 +138,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case LOGIN_NEXT:
 			//Authenticate User
 
-			//if (authenticateWinCred(5, uhash, cbUhash))
-			if(1)
+			if (authenticateWinCred(5, uhash, cbUhash))
+			//if(1)
 			{
 				//Remove the LoginControls
 				removeLoginContols(hwnd);
@@ -147,7 +147,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				addTrainFileControls(hwnd);
 				listTrainFilesDir(hwnd);
 				consoleControl = addConsoleControl(hwnd);
-				__printf((LPWSTR)L"User Authenticated.");
+				__printf((LPWSTR)L"User Authentication - OK.");
 			}
 			
 			break;

@@ -143,8 +143,13 @@ void uploadTrainFileProc(HWND hwnd)
 
 						//	//Call ReadFile with the buffer initialized above.
 						//Copy the file to the Data Directory
-						if(copyFileToDest(pszFilePath, (LPCWSTR)saveTo))
+						if (copyFileToDest(pszFilePath, (LPCWSTR)saveTo))
+						{
 							MessageBox(NULL, L"File Successfully Added", L"File Copy", MB_OK);
+
+							__printf((LPWSTR)L"File Upload - OK.");
+
+						}
 						else
 							MessageBox(NULL, L"File Open Error", L"File Copy", MB_OK);
 
