@@ -13,7 +13,7 @@
     <br />
     <br />
     <br />
-    <a href="https://github.com/prasadkjose/Confidential_ML_SGX/tree/master/screen%20recordings">View Demo</a>
+    <a href="https://github.com/prasadkjose/Confidential_ML_SGX/tree/master/screen-recordings">View Demo</a>
     ·
     <a href="https://github.com/prasadkjose/Confidential_ML_SGX/issues">Report Bug</a>
     
@@ -95,7 +95,7 @@ There are two applications
     <img src="Screenshots/EncrypterMain.png" alt="Logo" width="600" height="300"> 
     </p>
 
-  - Once the files are uploaded, they can be viewed in the colsole and also listed under "Encrypteed Files"
+  - Once the files are uploaded, they can be viewed in the console and also listed under "Encrypted Files"
     <p align="center">
       <img src="Screenshots/EncrypterUploaded.png" alt="Logo" width="600" height="300"> 
     </p>
