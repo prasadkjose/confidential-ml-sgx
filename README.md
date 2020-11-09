@@ -71,7 +71,7 @@ git clone https://github.com/prasadkjose/Confidential_ML_SGX.git
 ```
 
 3. Import the project in Visual Studio.
-4. Run the application in debug mode or simutaion mode.
+4. Run the application in debug mode or simulation mode.
 
 <!-- USAGE EXAMPLES -->
 
